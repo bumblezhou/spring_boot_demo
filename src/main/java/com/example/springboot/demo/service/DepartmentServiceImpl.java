@@ -30,8 +30,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     // Update operation
     @Override
-    public Department updateDepartment(Department department,
-            Long departmentId) {
+    public Department updateDepartment(Department department, Long departmentId) {
 
         Department depDB = departmentRepository.findById(departmentId).get();
 
@@ -45,6 +44,14 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         if (Objects.nonNull(department.getDepartmentCode()) && !"".equalsIgnoreCase(department.getDepartmentCode())) {
             depDB.setDepartmentCode(department.getDepartmentCode());
+        }
+
+        if (Objects.nonNull(department.getDepartmentMembers())) {
+            depDB.setDepartmentMembers(department.getDepartmentMembers());
+        }
+
+        if (Objects.nonNull(department.getDepartmentIsRunning())) {
+            depDB.setDepartmentIsRunning(department.getDepartmentIsRunning());
         }
 
         return departmentRepository.save(depDB);

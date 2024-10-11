@@ -10,51 +10,70 @@ function load_departments() {
         if (xhr.status === 200) {
             // Parse the JSON response
             const departments = JSON.parse(xhr.responseText);
-
             // Get the table body element
             const tbody = document.getElementById('table_departments').getElementsByTagName('tbody')[0];
-
             // Clear the table before inserting new data
             tbody.innerHTML = '';
-
             // Iterate over the array of departments and create table rows
             departments.forEach(department => {
                 const row = tbody.insertRow(); // Insert a new row
-
                 const idCell = row.insertCell(0); // Insert a cell for the Id
                 idCell.textContent = department.departmentId;   // Set the text content of the cell
-
                 const nameCell = row.insertCell(1); // Insert a cell for the Name
                 nameCell.textContent = department.departmentName; // Set the text content of the cell
-
                 const addrCell = row.insertCell(2); // Insert a cell for the Address
                 addrCell.textContent = department.departmentAddress; // Set the text content of the cell
-
                 const codeCell = row.insertCell(3); // Insert a cell for the Code
                 codeCell.textContent = department.departmentCode; // Set the text content of the cell
-
                 const membersCell = row.insertCell(4); // Insert a cell for the Members
                 membersCell.textContent = department.departmentMembers; // Set the text content of the cell
-
                 const isRunningCell = row.insertCell(5); // Insert a cell for the IsRunning
                 isRunningCell.textContent = department.departmentIsRunning; // Set the text content of the cell
-
-                const deleteCell = row.insertCell(6); // Insert a cell for the Delete
+                const operateCell = row.insertCell(6); // Insert a cell for Operating
                 // Create the anchor (a) element
-                const anchor = document.createElement('a');
+                const delete_anchor = document.createElement('a');
                 // Set the href attribute (it can be a URL or '#' for no navigation)
-                anchor.href = '#';
+                delete_anchor.href = '#';
                 // Set the text content of the anchor
-                anchor.textContent = 'Delete';
+                delete_anchor.textContent = 'Delete';
                 // Add an ID (optional, if you want to reference it later)
-                anchor.id = 'dynamic_link_' + department.departmentId;
-                // Append the anchor tag to the div with ID "link-container"
-                deleteCell.appendChild(anchor);
+                delete_anchor.id = 'delete_link_' + department.departmentId;
                 // Bind the click event handler
-                anchor.addEventListener('click', function(event) {
+                delete_anchor.addEventListener('click', function(event) {
                     event.preventDefault();  // Prevent default action (navigation)
                     delete_department_req(department.departmentId);
                 });
+                // Append the anchor tag to the div with ID "link-container"
+                operateCell.appendChild(delete_anchor);
+
+                const span = document.createElement('span');
+                span.textContent = ' | ';
+                operateCell.appendChild(span);
+
+                // Create the anchor (a) element
+                const edit_anchor = document.createElement('a');
+                // Set the href attribute (it can be a URL or '#' for no navigation)
+                edit_anchor.href = '#';
+                // Set the text content of the anchor
+                edit_anchor.textContent = 'Edit';
+                // Add an ID (optional, if you want to reference it later)
+                edit_anchor.id = 'edit_link_' + department.departmentId;
+                // Bind the click event handler
+                edit_anchor.addEventListener('click', function(event) {
+                    event.preventDefault();  // Prevent default action (navigation)
+                    // Select the modal element
+                    const edit_modal = new bootstrap.Modal(document.getElementById('edit_modal'));
+                    document.getElementById('edit_id').value = current_department.departmentId;
+                    document.getElementById('edit_name').value = current_department.departmentName;
+                    document.getElementById('edit_address').value = current_department.departmentAddress;
+                    document.getElementById('edit_code').value = current_department.departmentCode;
+                    document.getElementById('edit_members').value = current_department.departmentMembers;
+                    document.getElementById('edit_isrunning').checked = current_department.departmentIsRunning;
+                    document.getElementById('btn_save_department').setAttribute('onclick', 'update_department_req(); return false;');
+                    edit_modal.show();
+                });
+                // Append the anchor tag to the div with ID "link-container"
+                operateCell.appendChild(edit_anchor);                
             });
         } else {
             console.error('Failed to load departments:', xhr.statusText);
@@ -83,6 +102,35 @@ function add_department_req() {
     // Making the POST request using fetch API
     fetch(url, {
         method: 'POST', // or 'PUT'
+        headers: {
+            'Content-Type': 'application/json', // Sending JSON data
+            // 'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: JSON.stringify(data), // Convert JavaScript object to JSON
+    })
+    .then(response => response.json()) // Parse the JSON response
+    .then(data => {
+        console.log('Success:', data);
+        load_departments();
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+}
+
+function update_department_req() {
+    const url = 'http://localhost:8080/api/departments';
+    // Data to be sent in the request body
+    const data = {
+        departmentName: document.getElementById('edit_name').value,
+        departmentAddress: document.getElementById('edit_address').value,
+        departmentCode: document.getElementById('edit_code').value,
+        departmentMembers: document.getElementById('edit_members').value,
+        departmentIsRunning: document.getElementById('edit_isrunning').checked,
+    };
+    // Making the PUT request using fetch API
+    fetch(url, {
+        method: 'PUT', // or 'POST'
         headers: {
             'Content-Type': 'application/json', // Sending JSON data
             // 'Content-Type': 'application/x-www-form-urlencoded'
