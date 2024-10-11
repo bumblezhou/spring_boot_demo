@@ -1,3 +1,32 @@
+function getRowData(editId) {
+    let rowId = editId.toString().replace("edit_link_", "tr_");
+    // Get the row element by its id
+    let row = document.getElementById(rowId);
+    
+    // Get all the <td> elements within that row
+    let cells = row.getElementsByTagName('td');
+    
+    // Extract the data from each cell
+    let id = cells[0].innerText;
+    let name = cells[1].innerText;
+    let address = cells[2].innerText;
+    let code = cells[3].innerText;
+    let members = cells[4].innerText;
+    let isrunning = cells[5].innerText;
+
+    // Output the data (you can also return it or use it in your logic)
+    console.log("ID: " + id + ", Name: " + name + ", Addr: " + address + ", Code: " + code + ", Members: " + members + ", IsRunning: " + isrunning);
+
+    return {
+        departmentId: id,
+        departmentName: name,
+        departmentAddress: address,
+        departmentCode: code,
+        departmentMembers: members,
+        departmentIsRunning: isrunning,
+    };
+}
+
 function load_departments() {
     // Create a new XMLHttpRequest object
     const xhr = new XMLHttpRequest();
@@ -17,6 +46,7 @@ function load_departments() {
             // Iterate over the array of departments and create table rows
             departments.forEach(department => {
                 const row = tbody.insertRow(); // Insert a new row
+                row.id = 'tr_' + department.departmentId;
                 const idCell = row.insertCell(0); // Insert a cell for the Id
                 idCell.textContent = department.departmentId;   // Set the text content of the cell
                 const nameCell = row.insertCell(1); // Insert a cell for the Name
@@ -63,6 +93,7 @@ function load_departments() {
                     event.preventDefault();  // Prevent default action (navigation)
                     // Select the modal element
                     const edit_modal = new bootstrap.Modal(document.getElementById('edit_modal'));
+                    let current_department = getRowData(this.id);
                     document.getElementById('edit_id').value = current_department.departmentId;
                     document.getElementById('edit_name').value = current_department.departmentName;
                     document.getElementById('edit_address').value = current_department.departmentAddress;
