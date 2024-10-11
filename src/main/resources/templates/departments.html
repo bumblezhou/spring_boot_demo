@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Departmetns</title>
+    <meta charset="UTF-8">
+    <style>
+        table {
+            width: 80%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 1px;
+            text-align: left;
+        }
+    </style>
+    <script src="/js/department.js"></script>
+</head>
+<body onload="load_departments()">
+    <h1>Departmetns List</h1>
+    <table id="table_departments">
+        <thead>
+            <th>id</th>
+            <th>name</th>
+            <th>address</th>
+            <th>code</th>
+            <th>members</th>
+            <th>is running</th>
+            <th>operate</th>
+        </thead>
+        <tbody>
+            <!-- <tr th:each="department : ${departments}">
+                <td th:text="${department.departmentId}">1</td>
+                <td><a href="#" th:text="${department.departmentName}">Title ...</a></td>
+                <td th:text="${department.departmentAddress}">Text ...</td>
+                <td th:text="${department.departmentCode}">Text ...</td>
+                <td th:text="${department.departmentMembers}">Text ...</td>
+                <td th:text="${department.departmentIsRunning}">Text ...</td>
+            </tr> -->
+        </tbody>
+    </table>
+    <h1>Add departments</h1>
+    <div>
+        <input name="name" id="name" type="text" />
+        <input name="address" id="address" type="text" placeholder="1-1" />
+        <input name="code" id="code" type="text" placeholder="001" />
+        <input name="members" id="members" type="number" placeholder="5" min="0" />
+        <input name="isrunning" id="isrunning" type="checkbox" />
+        <button onclick="add_department_req()">Add</button>
+    </div>
+    <div>
+        <p></p>
+        <a href="/">Go back to home</a>
+    </div>
+    
+</body>
+</html>
