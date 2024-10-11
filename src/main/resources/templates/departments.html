@@ -3,6 +3,7 @@
 <head>
     <title>Departmetns</title>
     <meta charset="UTF-8">
+    <th:block th:replace="fragments/bootstrap_ref :: bootstrap_css_js"/>
     <style>
         table {
             width: 80%;
@@ -19,6 +20,7 @@
     <script src="/js/department.js"></script>
 </head>
 <body onload="load_departments()">
+    <div th:replace="fragments/navigation :: navigation"></div>
     <h1>Departmetns List</h1>
     <table id="table_departments">
         <thead>
@@ -50,10 +52,5 @@
         <input name="isrunning" id="isrunning" type="checkbox" />
         <button onclick="add_department_req()">Add</button>
     </div>
-    <div>
-        <p></p>
-        <a href="/">Go back to home</a>
-    </div>
-    
 </body>
 </html>
