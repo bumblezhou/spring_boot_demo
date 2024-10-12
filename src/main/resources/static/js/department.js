@@ -152,6 +152,18 @@ function load_departments() {
     xhr.send();
 }
 
+function add_department() {
+    document.getElementById('edit_id').value = 0;
+    document.getElementById('edit_name').value = '财务部';
+    document.getElementById('edit_address').value = '1-3';
+    document.getElementById('edit_code').value = '001';
+    document.getElementById('edit_members').value = 3;
+    document.getElementById('edit_isrunning').checked = true;
+    document.getElementById('btn_save_department').setAttribute('onclick', 'add_department_req(); return false;');
+    document.getElementById('myModalLabel').textContent = 'Add Department';
+    edit_modal.show();
+}
+
 function add_department_req() {
     const url = 'http://localhost:8080/api/departments';
     // Data to be sent in the request body
