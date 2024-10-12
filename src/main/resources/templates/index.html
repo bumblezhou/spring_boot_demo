@@ -6,10 +6,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hello</title>
-    <th:block th:replace="fragments/bootstrap_ref :: bootstrap_css_js"/>
+    <th:block th:replace="~{fragments/bootstrap_ref :: bootstrap_css_js}"/>
 </head>
 <body>
-    <div th:replace="fragments/navigation :: navigation"></div>
+    <div th:replace="~{fragments/navigation :: navigation}"></div>
     <h1 th:text="${message}">Default Message</h1>
     <p>Username: <span th:text="${username}">Default User</span></p>
 </body>
