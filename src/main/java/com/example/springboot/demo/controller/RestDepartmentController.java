@@ -52,13 +52,13 @@ public class RestDepartmentController {
      *
      * @RequestParam(defaultValue = "0") int page,
      * @RequestParam(defaultValue = "10") int size,
-     * @RequestParam(defaultValue = "Id") String sortBy
+     * @RequestParam(defaultValue = "id") String sortBy
     */
     @GetMapping("/api/departments/fetchDepartmentsByPage")
     public ResponseEntity<Page<Department>> fetchDepartmentsByPage(
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size,
-        @RequestParam(defaultValue = "Id") String sortBy) {
+        @RequestParam(defaultValue = "id") String sortBy) {
         PageRequest pageable = PageRequest.of(page, size, Sort.by(sortBy));
         Page<Department> departments = departmentService.fetchDepartmentsByPage(pageable);
         return new ResponseEntity<>(departments, HttpStatus.OK);
@@ -69,7 +69,7 @@ public class RestDepartmentController {
      * 
      * @RequestParam(defaultValue = "0") int page,
      * @RequestParam(defaultValue = "10") int size,
-     * @RequestParam(defaultValue = "Id") String sortBy,
+     * @RequestParam(defaultValue = "id") String sortBy,
      * @RequestParam(required = false) String name,
      * @RequestParam(required = false) String address,
      * @RequestParam(required = false) String code
@@ -78,7 +78,7 @@ public class RestDepartmentController {
     public ResponseEntity<Page<Department>> findDepartments(
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size,
-        @RequestParam(defaultValue = "Id") String sortBy,
+        @RequestParam(defaultValue = "id") String sortBy,
         @RequestParam(required = false) String name,
         @RequestParam(required = false) String address,
         @RequestParam(required = false) String code
