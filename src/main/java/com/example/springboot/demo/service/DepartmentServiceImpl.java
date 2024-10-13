@@ -6,6 +6,8 @@ import com.example.springboot.demo.repository.DepartmentRepository;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 // Annotation
@@ -26,6 +28,10 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public List<Department> fetchDepartmentList() {
         return (List<Department>) departmentRepository.findAll();
+    }
+
+    public Page<Department> getDepartments(String name, String address, String code, Pageable pageable) {
+        return departmentRepository.findByFilters(name, address, code, pageable);
     }
 
     // Update operation

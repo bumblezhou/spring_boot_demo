@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Departmetns</title>
+    <meta charset="UTF-8">
+    <th:block th:replace="~{fragments/bootstrap_ref :: bootstrap_css_js}" />
+    <th:block th:replace="~{fragments/vuejs_ref :: vue_js}" />
+</head>
+
+<body>
+  <div th:replace="~{fragments/navigation :: navigation}"></div>
+  <div id="app">
+    <button @click="increment()">
+      Increment
+    </button>
+    <div>{{ count }} * {{ count }} = {{ react }}</div>
+    <h1 v-show="ok">Hello!</h1>
+  </div>
+  <script>
+    const { createApp, ref, computed } = Vue
+  
+    createApp({
+      setup() {
+        const count = ref(0);
+        const react = computed(() => count.value * count.value);
+        const ok = ref(true);
+
+        function increment() {
+          // .value is needed in JavaScript
+          count.value++;
+          ok.value = count.value % 2 == 0 ? true : false;
+        }
+
+        // expose the ref to the template
+        return {
+          count,
+          react,
+          ok,
+          increment
+        }
+      }
+    }).mount('#app')
+  </script>
+</body>
+</html>
