@@ -1,11 +1,12 @@
 package com.example.springboot.demo.model;
 
 import jakarta.persistence.Column;
-// Importing required classes
+// deprecated
 // import javax.persistence.Entity;
 // import javax.persistence.GeneratedValue;
 // import javax.persistence.GenerationType;
 // import javax.persistence.Id;
+// deprecated
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
