@@ -30,34 +30,38 @@ public class DepartmentServiceImpl implements DepartmentService {
         return (List<Department>) departmentRepository.findAll();
     }
 
-    public Page<Department> getDepartments(String name, String address, String code, Pageable pageable) {
+    public Page<Department> fetchDepartmentsByPage(Pageable pageable) {
+        return departmentRepository.findAll(pageable);
+    }
+
+    public Page<Department> findDepartments(String name, String address, String code, Pageable pageable) {
         return departmentRepository.findByFilters(name, address, code, pageable);
     }
 
     // Update operation
     @Override
-    public Department updateDepartment(Department department, Long departmentId) {
+    public Department updateDepartment(Department department, Long Id) {
 
-        Department depDB = departmentRepository.findById(departmentId).get();
+        Department depDB = departmentRepository.findById(Id).get();
 
-        if (Objects.nonNull(department.getDepartmentName()) && !"".equalsIgnoreCase(department.getDepartmentName())) {
-            depDB.setDepartmentName(department.getDepartmentName());
+        if (Objects.nonNull(department.getName()) && !"".equalsIgnoreCase(department.getName())) {
+            depDB.setName(department.getName());
         }
 
-        if (Objects.nonNull(department.getDepartmentAddress()) && !"".equalsIgnoreCase(department.getDepartmentAddress())) {
-            depDB.setDepartmentAddress(department.getDepartmentAddress());
+        if (Objects.nonNull(department.getAddress()) && !"".equalsIgnoreCase(department.getAddress())) {
+            depDB.setAddress(department.getAddress());
         }
 
-        if (Objects.nonNull(department.getDepartmentCode()) && !"".equalsIgnoreCase(department.getDepartmentCode())) {
-            depDB.setDepartmentCode(department.getDepartmentCode());
+        if (Objects.nonNull(department.getCode()) && !"".equalsIgnoreCase(department.getCode())) {
+            depDB.setCode(department.getCode());
         }
 
-        if (Objects.nonNull(department.getDepartmentMembers())) {
-            depDB.setDepartmentMembers(department.getDepartmentMembers());
+        if (Objects.nonNull(department.getMembers())) {
+            depDB.setMembers(department.getMembers());
         }
 
-        if (Objects.nonNull(department.getDepartmentIsRunning())) {
-            depDB.setDepartmentIsRunning(department.getDepartmentIsRunning());
+        if (Objects.nonNull(department.getIsRunning())) {
+            depDB.setIsRunning(department.getIsRunning());
         }
 
         return departmentRepository.save(depDB);
@@ -65,7 +69,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     // Delete operation
     @Override
-    public void deleteDepartmentById(Long departmentId) {
-        departmentRepository.deleteById(departmentId);
+    public void deleteDepartmentById(Long Id) {
+        departmentRepository.deleteById(Id);
     }
 }

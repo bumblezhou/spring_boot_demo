@@ -17,11 +17,13 @@ public interface DepartmentService {
 	List<Department> fetchDepartmentList();
 
 	// Search operation
-	public Page<Department> getDepartments(String name, String address, String code, Pageable pageable);
+	public Page<Department> fetchDepartmentsByPage(Pageable pageable);
+
+	public Page<Department> findDepartments(String name, String address, String code, Pageable pageable);
 
 	// Update operation
-	Department updateDepartment(Department department, Long departmentId);
+	Department updateDepartment(Department department, Long Id);
 
 	// Delete operation
-	void deleteDepartmentById(Long departmentId);
+	void deleteDepartmentById(Long Id);
 }

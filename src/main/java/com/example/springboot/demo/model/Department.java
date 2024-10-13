@@ -24,15 +24,15 @@ public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")
-    private Long departmentId;
+    private Long Id;
     @Column(name = "NAME")
-    private String departmentName;
+    private String Name;
     @Column(name = "ADDRESS")
-    private String departmentAddress;
+    private String Address;
     @Column(name = "CODE")
-    private String departmentCode;
+    private String Code;
     @Column(name = "MEMBERS")
-    private Long departmentMembers;
+    private Long Members;
     @Column(name = "ISRUNNING")
-    private Boolean departmentIsRunning;
+    private Boolean IsRunning;
 }

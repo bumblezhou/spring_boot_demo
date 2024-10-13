@@ -11,10 +11,10 @@ import org.springframework.data.repository.query.Param;
 @Repository
 public interface DepartmentRepository extends JpaRepository<Department, Long> {
 
-  @Query("SELECT D.departmentId, D.departmentName, D.departmentAddress, D.departmentCode, D.departmentMembers, D.departmentIsRunning FROM Department D WHERE " +
-        "(D.departmentName LIKE %:name%) OR " +
-        "(D.departmentAddress LIKE %:address%) OR " +
-        "(D.departmentCode LIKE %:code%)")
+  @Query("SELECT D.Id, D.Name, D.Address, D.Code, D.Members, D.IsRunning FROM Department D WHERE " +
+        "(D.Name LIKE %:name%) OR " +
+        "(D.Address LIKE %:address%) OR " +
+        "(D.Code LIKE %:code%)")
   Page<Department> findByFilters(
     @Param("name") String name, 
     @Param("address") String address, 

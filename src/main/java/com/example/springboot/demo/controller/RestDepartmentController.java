@@ -47,32 +47,59 @@ public class RestDepartmentController {
         return departmentService.fetchDepartmentList();
     }
 
-    @GetMapping("/api/departments/{page}/{size}/{sortBy}/name/address/code")
-    public ResponseEntity<Page<Department>> getDepartments(
+    /*
+     * Example: http://localhost:8080/api/departments/fetchDepartmentsByPage?page=0&size=10&sortBy=Id
+     *
+     * @RequestParam(defaultValue = "0") int page,
+     * @RequestParam(defaultValue = "10") int size,
+     * @RequestParam(defaultValue = "Id") String sortBy
+    */
+    @GetMapping("/api/departments/fetchDepartmentsByPage")
+    public ResponseEntity<Page<Department>> fetchDepartmentsByPage(
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size,
-        @RequestParam(defaultValue = "id") String sortBy,
+        @RequestParam(defaultValue = "Id") String sortBy) {
+        PageRequest pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        Page<Department> departments = departmentService.fetchDepartmentsByPage(pageable);
+        return new ResponseEntity<>(departments, HttpStatus.OK);
+    }
+
+    /*
+     * Example: http://localhost:8080/api/departments/findDepartments?page=0&size=10&sortBy=Id&name=abc&address=xyz&code=123
+     * 
+     * @RequestParam(defaultValue = "0") int page,
+     * @RequestParam(defaultValue = "10") int size,
+     * @RequestParam(defaultValue = "Id") String sortBy,
+     * @RequestParam(required = false) String name,
+     * @RequestParam(required = false) String address,
+     * @RequestParam(required = false) String code
+    */
+    @GetMapping("/api/departments/findDepartments")
+    public ResponseEntity<Page<Department>> findDepartments(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(defaultValue = "Id") String sortBy,
         @RequestParam(required = false) String name,
         @RequestParam(required = false) String address,
         @RequestParam(required = false) String code
     ) {
         PageRequest pageable = PageRequest.of(page, size, Sort.by(sortBy));
-        Page<Department> departments = departmentService.getDepartments(name, address, code, pageable);
+        Page<Department> departments = departmentService.findDepartments(name, address, code, pageable);
         return new ResponseEntity<>(departments, HttpStatus.OK);
     }
  
     // Update operation
     @PutMapping("/api/departments/{id}")
-    public Department updateDepartment(@RequestBody Department department, @PathVariable("id") Long departmentId)
+    public Department updateDepartment(@RequestBody Department department, @PathVariable("id") Long Id)
     {
-        return departmentService.updateDepartment(department, departmentId);
+        return departmentService.updateDepartment(department, Id);
     }
  
     // Delete operation
     @DeleteMapping("/api/departments/{id}")
-    public Message deleteDepartmentById(@PathVariable("id")Long departmentId)
+    public Message deleteDepartmentById(@PathVariable("id")Long Id)
     {
-        departmentService.deleteDepartmentById(departmentId);
+        departmentService.deleteDepartmentById(Id);
         return new Message("Deleted Successfully");
     }
 }

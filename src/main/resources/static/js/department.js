@@ -18,12 +18,12 @@ function getRowData(editId) {
     console.log("ID: " + id + ", Name: " + name + ", Addr: " + address + ", Code: " + code + ", Members: " + members + ", IsRunning: " + isrunning);
 
     return {
-        departmentId: id,
-        departmentName: name,
-        departmentAddress: address,
-        departmentCode: code,
-        departmentMembers: members,
-        departmentIsRunning: isrunning,
+        id: id,
+        name: name,
+        address: address,
+        code: code,
+        members: members,
+        isrunning: isrunning,
     };
 }
 
@@ -46,19 +46,20 @@ function load_departments() {
             // Iterate over the array of departments and create table rows
             departments.forEach(department => {
                 const row = tbody.insertRow(); // Insert a new row
-                row.id = 'tr_' + department.departmentId;
+                row.id = 'tr_' + department.id;
                 const idCell = row.insertCell(0); // Insert a cell for the Id
-                idCell.textContent = department.departmentId;   // Set the text content of the cell
+                idCell.textContent = department.id;   // Set the text content of the cell
+                idCell.style = 'width: 0;';
                 const nameCell = row.insertCell(1); // Insert a cell for the Name
-                nameCell.textContent = department.departmentName; // Set the text content of the cell
+                nameCell.textContent = department.name; // Set the text content of the cell
                 const addrCell = row.insertCell(2); // Insert a cell for the Address
-                addrCell.textContent = department.departmentAddress; // Set the text content of the cell
+                addrCell.textContent = department.address; // Set the text content of the cell
                 const codeCell = row.insertCell(3); // Insert a cell for the Code
-                codeCell.textContent = department.departmentCode; // Set the text content of the cell
+                codeCell.textContent = department.code; // Set the text content of the cell
                 const membersCell = row.insertCell(4); // Insert a cell for the Members
-                membersCell.textContent = department.departmentMembers; // Set the text content of the cell
+                membersCell.textContent = department.members; // Set the text content of the cell
                 const isRunningCell = row.insertCell(5); // Insert a cell for the IsRunning
-                isRunningCell.textContent = department.departmentIsRunning; // Set the text content of the cell
+                isRunningCell.textContent = department.isRunning; // Set the text content of the cell
                 const operateCell = row.insertCell(6); // Insert a cell for Operating
 
                 // Create the anchor (a) element
@@ -68,20 +69,20 @@ function load_departments() {
                 // Set the text content of the anchor
                 add_anchor.textContent = 'Add';
                 // Add an ID (optional, if you want to reference it later)
-                add_anchor.id = 'add_link_' + department.departmentId;
+                add_anchor.id = 'add_link_' + department.id;
                 // Bind the click event handler
                 add_anchor.addEventListener('click', function(event) {
                     event.preventDefault();  // Prevent default action (navigation)
                     // Select the modal element
                     document.getElementById('edit_id').value = 0;
                     let current_department = getRowData(this.id);
-                    // document.getElementById('edit_id').value = current_department.departmentId;
-                    document.getElementById('edit_name').value = current_department.departmentName;
-                    document.getElementById('edit_address').value = current_department.departmentAddress;
-                    document.getElementById('edit_code').value = current_department.departmentCode;
-                    document.getElementById('edit_members').value = current_department.departmentMembers;
-                    document.getElementById('edit_isrunning').checked = current_department.departmentIsRunning;
-                    document.getElementById('btn_save_department').setAttribute('onclick', 'add_department_req(' + current_department.departmentId + '); return false;');
+                    // document.getElementById('edit_id').value = current_department.id;
+                    document.getElementById('edit_name').value = current_department.name;
+                    document.getElementById('edit_address').value = current_department.address;
+                    document.getElementById('edit_code').value = current_department.code;
+                    document.getElementById('edit_members').value = current_department.members;
+                    document.getElementById('edit_isrunning').checked = current_department.isRunning;
+                    document.getElementById('btn_save_department').setAttribute('onclick', 'add_department_req(' + current_department.id + '); return false;');
                     document.getElementById('myModalLabel').textContent = 'Add Department';
                     edit_modal.show();
                 });
@@ -99,19 +100,19 @@ function load_departments() {
                 // Set the text content of the anchor
                 edit_anchor.textContent = 'Edit';
                 // Add an ID (optional, if you want to reference it later)
-                edit_anchor.id = 'edit_link_' + department.departmentId;
+                edit_anchor.id = 'edit_link_' + department.id;
                 // Bind the click event handler
                 edit_anchor.addEventListener('click', function(event) {
                     event.preventDefault();  // Prevent default action (navigation)
                     // Select the modal element
                     let current_department = getRowData(this.id);
-                    document.getElementById('edit_id').value = current_department.departmentId;
-                    document.getElementById('edit_name').value = current_department.departmentName;
-                    document.getElementById('edit_address').value = current_department.departmentAddress;
-                    document.getElementById('edit_code').value = current_department.departmentCode;
-                    document.getElementById('edit_members').value = current_department.departmentMembers;
-                    document.getElementById('edit_isrunning').checked = current_department.departmentIsRunning;
-                    document.getElementById('btn_save_department').setAttribute('onclick', 'update_department_req(' + current_department.departmentId + '); return false;');
+                    document.getElementById('edit_id').value = current_department.id;
+                    document.getElementById('edit_name').value = current_department.name;
+                    document.getElementById('edit_address').value = current_department.address;
+                    document.getElementById('edit_code').value = current_department.code;
+                    document.getElementById('edit_members').value = current_department.members;
+                    document.getElementById('edit_isrunning').checked = current_department.isRunning;
+                    document.getElementById('btn_save_department').setAttribute('onclick', 'update_department_req(' + current_department.id + '); return false;');
                     document.getElementById('myModalLabel').textContent = 'Update Department';
                     edit_modal.show();
                 });
@@ -129,11 +130,11 @@ function load_departments() {
                 // Set the text content of the anchor
                 delete_anchor.textContent = 'Delete';
                 // Add an ID (optional, if you want to reference it later)
-                delete_anchor.id = 'delete_link_' + department.departmentId;
+                delete_anchor.id = 'delete_link_' + department.id;
                 // Bind the click event handler
                 delete_anchor.addEventListener('click', function(event) {
                     event.preventDefault();  // Prevent default action (navigation)
-                    delete_department_req(department.departmentId);
+                    delete_department_req(department.id);
                 });
                 // Append the anchor tag to the div with ID "link-container"
                 operateCell.appendChild(delete_anchor);
@@ -168,11 +169,11 @@ function add_department_req() {
     const url = 'http://localhost:8080/api/departments';
     // Data to be sent in the request body
     const data = {
-        departmentName: document.getElementById('edit_name').value,
-        departmentAddress: document.getElementById('edit_address').value,
-        departmentCode: document.getElementById('edit_code').value,
-        departmentMembers: document.getElementById('edit_members').value,
-        departmentIsRunning: document.getElementById('edit_isrunning').checked,
+        name: document.getElementById('edit_name').value,
+        address: document.getElementById('edit_address').value,
+        code: document.getElementById('edit_code').value,
+        members: document.getElementById('edit_members').value,
+        isRunning: document.getElementById('edit_isrunning').checked,
     };
     // Making the POST request using fetch API
     fetch(url, {
@@ -198,12 +199,12 @@ function update_department_req(id) {
     const url = 'http://localhost:8080/api/departments/' + id;
     // Data to be sent in the request body
     const data = {
-        departmentId: document.getElementById('edit_id').value,
-        departmentName: document.getElementById('edit_name').value,
-        departmentAddress: document.getElementById('edit_address').value,
-        departmentCode: document.getElementById('edit_code').value,
-        departmentMembers: document.getElementById('edit_members').value,
-        departmentIsRunning: document.getElementById('edit_isrunning').checked,
+        id: document.getElementById('edit_id').value,
+        name: document.getElementById('edit_name').value,
+        address: document.getElementById('edit_address').value,
+        code: document.getElementById('edit_code').value,
+        members: document.getElementById('edit_members').value,
+        isRunning: document.getElementById('edit_isrunning').checked,
     };
     // Making the PUT request using fetch API
     fetch(url, {
