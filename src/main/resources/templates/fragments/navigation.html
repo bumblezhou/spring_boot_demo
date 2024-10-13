@@ -24,13 +24,13 @@
     </div>
     <script>
         // Get the current page URL
-        const currentPage = window.location.pathname;
+        const currentPageUrl = window.location.pathname;
         // Get all the nav-link elements
         const navLinks = document.querySelectorAll('ul.nav li a.nav-link');
         // Loop through each nav link and check its href attribute
         navLinks.forEach(link => {
             // If the href matches the current page path, add the "active" class
-            if (link.getAttribute('href') === currentPage) {
+            if (link.getAttribute('href') === currentPageUrl) {
                 link.classList.remove('link-secondary'); // Remove active from any non-current links
             } else {
                 link.classList.add('link-secondary');

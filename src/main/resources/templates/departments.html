@@ -6,9 +6,17 @@
     <meta charset="UTF-8">
     <th:block th:replace="~{fragments/bootstrap_ref :: bootstrap_css_js}" />
     <script src="/js/department.js"></script>
+    <style>
+        .pagination li.active {
+            font-weight: bold;
+        }
+    </style>
+    <script>
+        
+    </script>
 </head>
 
-<body onload="load_departments()">
+<body onload="load_departments(currentPageIndex)">
     <div th:replace="~{fragments/navigation :: navigation}"></div>
     <div class="row">
         <div class="col-sm-3">
@@ -19,10 +27,10 @@
         </div>
     </div>
     
-    <div style="margin: 5px;">
+    <div class="container">
         <table id="table_departments" class="table table-striped table-bordered">
             <thead>
-                <th scope="col" style="width: 0;">id</th>
+                <th scope="col">id</th>
                 <th scope="col">name</th>
                 <th scope="col">address</th>
                 <th scope="col">code</th>
@@ -41,6 +49,11 @@
                 </tr> -->
             </tbody>
         </table>
+        <!-- Pagination controls -->
+        <nav>
+            <ul class="pagination justify-content-center" id="pagination"></ul>
+        </nav>
+        
     </div>
 
     <!-- Modal Structure -->

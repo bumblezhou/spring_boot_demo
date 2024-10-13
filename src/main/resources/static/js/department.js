@@ -27,29 +27,85 @@ function getRowData(editId) {
     };
 }
 
-function load_departments() {
+let currentPageIndex = 0;
+const pageSize = 10;
+
+// Function to display pagination controls
+function display_pagination(data) {
+    const pagination = document.getElementById('pagination');
+    pagination.innerHTML = '';
+
+    // Previous button
+    if (!data.first) {
+        const prev = document.createElement('li');
+        prev.classList.add('page-item');
+        prev.innerHTML = '<a class="page-link" href="#">Previous</a>';
+        prev.onclick = () => {
+            if (currentPageIndex > 0) {
+                currentPageIndex--;
+                load_departments(currentPageIndex);
+            }
+        };
+        pagination.appendChild(prev);
+    }
+
+    // Page numbers
+    for (let i = 0; i < data.totalPages; i++) {
+        const page = document.createElement('li');
+        page.classList.add('page-item');
+        if (i === currentPageIndex) {
+            page.classList.add('active');
+        }
+        page.innerHTML = `<a class="page-link" href="#">${i + 1}</a>`;
+        page.onclick = (function (pageIndex) {
+            return function () {
+                currentPageIndex = pageIndex;
+                load_departments(currentPageIndex);
+            };
+        })(i);
+        pagination.appendChild(page);
+    }
+
+    // Next button
+    if (!data.last) {
+        const next = document.createElement('li');
+        next.classList.add('page-item');
+        next.innerHTML = '<a class="page-link" href="#">Next</a>';
+        next.onclick = () => {
+            if (currentPageIndex < data.totalPages - 1) {
+                currentPageIndex++;
+                load_departments(currentPageIndex);
+            }
+        };
+        pagination.appendChild(next);
+    }
+}
+
+/*
+    currentPageIndex: The current page number, start with 0
+*/
+function load_departments(currentPageIndex) {
     // Create a new XMLHttpRequest object
     const xhr = new XMLHttpRequest();
 
     // Specify the type of request (GET) and the URL
-    xhr.open('GET', 'http://localhost:8080/api/departments', true);
+    xhr.open('GET', 'http://localhost:8080/api/departments/fetchDepartmentsByPage?page=' + currentPageIndex + '&size=' + pageSize, true);
 
     // Set up a callback function to handle the response
     xhr.onload = function() {
         if (xhr.status === 200) {
             // Parse the JSON response
-            const departments = JSON.parse(xhr.responseText);
+            const data = JSON.parse(xhr.responseText);
             // Get the table body element
             const tbody = document.getElementById('table_departments').getElementsByTagName('tbody')[0];
             // Clear the table before inserting new data
             tbody.innerHTML = '';
             // Iterate over the array of departments and create table rows
-            departments.forEach(department => {
+            data.content.forEach(department => {
                 const row = tbody.insertRow(); // Insert a new row
                 row.id = 'tr_' + department.id;
                 const idCell = row.insertCell(0); // Insert a cell for the Id
                 idCell.textContent = department.id;   // Set the text content of the cell
-                idCell.style = 'width: 0;';
                 const nameCell = row.insertCell(1); // Insert a cell for the Name
                 nameCell.textContent = department.name; // Set the text content of the cell
                 const addrCell = row.insertCell(2); // Insert a cell for the Address
@@ -139,6 +195,8 @@ function load_departments() {
                 // Append the anchor tag to the div with ID "link-container"
                 operateCell.appendChild(delete_anchor);
             });
+
+            display_pagination(data);
         } else {
             console.error('Failed to load departments:', xhr.statusText);
         }
@@ -187,7 +245,7 @@ function add_department_req() {
     .then(response => response.json()) // Parse the JSON response
     .then(data => {
         console.log('Success:', data);
-        load_departments();
+        load_departments(currentPageIndex);
         edit_modal.hide();
     })
     .catch((error) => {
@@ -218,7 +276,7 @@ function update_department_req(id) {
     .then(response => response.json()) // Parse the JSON response
     .then(data => {
         console.log('Success:', data);
-        load_departments();
+        load_departments(currentPageIndex);
         edit_modal.hide();
     })
     .catch((error) => {
@@ -241,7 +299,7 @@ function delete_department_req(id) {
     .then(response => response.json()) // Parse the JSON response
     .then(data => {
         console.log('Success:', data);
-        load_departments();
+        load_departments(currentPageIndex);
     })
     .catch((error) => {
         console.error('Error:', error);
