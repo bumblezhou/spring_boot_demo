@@ -12,10 +12,10 @@ function getRowData(editId) {
     let address = cells[2].innerText;
     let code = cells[3].innerText;
     let members = cells[4].innerText;
-    let isrunning = cells[5].innerText == "true" ? true : false;
+    let isRunning = cells[5].innerText == "true" ? true : false;
 
     // Output the data (you can also return it or use it in your logic)
-    console.log("ID: " + id + ", Name: " + name + ", Addr: " + address + ", Code: " + code + ", Members: " + members + ", IsRunning: " + isrunning);
+    console.log("ID: " + id + ", Name: " + name + ", Addr: " + address + ", Code: " + code + ", Members: " + members + ", IsRunning: " + isRunning);
 
     return {
         id: id,
@@ -23,7 +23,7 @@ function getRowData(editId) {
         address: address,
         code: code,
         members: members,
-        isrunning: isrunning,
+        isRunning: isRunning,
     };
 }
 
