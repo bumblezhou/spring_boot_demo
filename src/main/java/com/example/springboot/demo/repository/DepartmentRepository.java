@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 @Repository
 public interface DepartmentRepository extends JpaRepository<Department, Long> {
 
-  @Query("SELECT D.Id, D.Name, D.Address, D.Code, D.Members, D.IsRunning FROM Department D WHERE " +
+  @Query("SELECT new com.example.springboot.demo.model.Department(D.Id, D.Name, D.Address, D.Code, D.Members, D.IsRunning) FROM Department D WHERE " +
         "(D.Name LIKE %:name%) OR " +
         "(D.Address LIKE %:address%) OR " +
         "(D.Code LIKE %:code%)")

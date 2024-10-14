@@ -23,11 +23,19 @@
             <h1>Departments</h1>
         </div>
         <div class="col-sm-9">
-            <button type="button" class="btn btn-primary" onclick="add_department()">Add</button>
+            <div class="row">
+                <div class="col-sm-9">
+                    <input type="text" id="txt_search_key" name="txt_search_key" placeholder="Example: 财务部" value="财务部" class="form-control col-sm-3" />
+                </div>
+                <div class="col-sm-3">
+                    <button type="button" class="btn btn-primary" onclick="search_department(currentPageIndex)">Search</button>
+                    <button type="button" class="btn btn-primary" onclick="add_department()">Add</button>
+                </div>
+            </div>
         </div>
     </div>
     
-    <div class="container">
+    <div style="margin: 0 5px 0 5px;">
         <table id="table_departments" class="table table-striped table-bordered">
             <thead>
                 <th scope="col">id</th>
