@@ -386,7 +386,6 @@ function add_department_req() {
         method: 'POST', // or 'PUT'
         headers: {
             'Content-Type': 'application/json', // Sending JSON data
-            // 'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: JSON.stringify(data), // Convert JavaScript object to JSON
     })
@@ -417,7 +416,6 @@ function update_department_req(id) {
         method: 'PUT', // or 'POST'
         headers: {
             'Content-Type': 'application/json', // Sending JSON data
-            // 'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: JSON.stringify(data), // Convert JavaScript object to JSON
     })
