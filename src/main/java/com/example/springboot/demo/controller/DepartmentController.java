@@ -40,12 +40,12 @@ public class DepartmentController {
         return departmentService.saveDepartment(department);
     }
  
-    // Read operation
-    @GetMapping("/api/departments")
-    public List<Department> fetchDepartmentList()
-    {
-        return departmentService.fetchDepartmentList();
-    }
+    // // Read operation
+    // @GetMapping("/api/departments")
+    // public List<Department> fetchDepartmentList()
+    // {
+    //     return departmentService.fetchDepartmentList();
+    // }
 
     /*
      * Example: http://localhost:8080/api/departments/fetchDepartmentsByPage?page=0&size=10&sortBy=Id

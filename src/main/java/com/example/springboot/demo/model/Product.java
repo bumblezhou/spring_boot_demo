@@ -40,7 +40,7 @@ public class Product {
     private String specifications;
 
     @Column(name = "DETAILS_URL")
-    private String details_url;
+    private String detailsUrl;
 
     @Column(name = "DESCRIPTION")
     private String description;

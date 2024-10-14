@@ -17,9 +17,9 @@ public interface DepartmentService {
 	List<Department> fetchDepartmentList();
 
 	// Search operation
-	public Page<Department> fetchDepartmentsByPage(Pageable pageable);
+	Page<Department> fetchDepartmentsByPage(Pageable pageable);
 
-	public Page<Department> findDepartments(String name, String address, String code, Pageable pageable);
+	Page<Department> findDepartments(String name, String address, String code, Pageable pageable);
 
 	// Update operation
 	Department updateDepartment(Department department, Long Id);
