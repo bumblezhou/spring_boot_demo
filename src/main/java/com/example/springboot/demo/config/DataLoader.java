@@ -55,17 +55,23 @@ public class DataLoader implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         if (userRepository.count() == 0) {
             departmentRepository.save(new Department(null, "财务部", "1区11-1", "001", 5L, true));
-            departmentRepository.save(new Department(null, "财务部", "2区11-1", "002", 5L, true));
-            departmentRepository.save(new Department(null, "财务部", "3区11-1", "003", 5L, true));
-            departmentRepository.save(new Department(null, "财务部", "4区11-1", "004", 5L, true));
-            departmentRepository.save(new Department(null, "财务部", "5区11-1", "005", 5L, true));
-            departmentRepository.save(new Department(null, "财务部", "6区11-1", "006", 5L, true));
-            departmentRepository.save(new Department(null, "财务部", "7区11-1", "007", 5L, true));
-            departmentRepository.save(new Department(null, "财务部", "8区11-1", "008", 5L, true));
-            departmentRepository.save(new Department(null, "财务部", "9区11-1", "009", 5L, true));
-            departmentRepository.save(new Department(null, "财务部", "10区1-1", "010", 5L, true));
-            departmentRepository.save(new Department(null, "财务部", "11区1-1", "011", 5L, true));
-            departmentRepository.save(new Department(null, "财务部", "12区1-1", "012", 5L, true));
+            departmentRepository.save(new Department(null, "市场部", "2区11-1", "002", 25L, true));
+            departmentRepository.save(new Department(null, "财务部", "3区11-1", "003", 5L, false));
+            departmentRepository.save(new Department(null, "财务部", "4区11-1", "004", 5L, false));
+            departmentRepository.save(new Department(null, "财务部", "5区11-1", "005", 5L, false));
+            departmentRepository.save(new Department(null, "财务部", "6区11-1", "006", 5L, false));
+            departmentRepository.save(new Department(null, "财务部", "7区11-1", "007", 5L, false));
+            departmentRepository.save(new Department(null, "财务部", "8区11-1", "008", 5L, false));
+            departmentRepository.save(new Department(null, "财务部", "9区11-1", "009", 5L, false));
+            departmentRepository.save(new Department(null, "企划部", "10区1-1", "010", 15L, true));
+            departmentRepository.save(new Department(null, "研发部", "10区1-2", "011", 38L, true));
+            departmentRepository.save(new Department(null, "财务部", "11区1-1", "012", 5L, false));
+            departmentRepository.save(new Department(null, "财务部", "12区1-1", "013", 5L, false));
+            departmentRepository.save(new Department(null, "财务部", "13区1-1", "014", 5L, false));
+            departmentRepository.save(new Department(null, "财务部", "14区1-1", "015", 5L, false));
+            departmentRepository.save(new Department(null, "财务部", "15区1-1", "016", 5L, false));
+            departmentRepository.save(new Department(null, "财务部", "16区1-1", "017", 5L, false));
+            departmentRepository.save(new Department(null, "财务部", "17区1-1", "018", 5L, false));
             
             userRepository.save(new User(null, "user1", "user1@gmail.com", "password1", ""));
             userRepository.save(new User(null, "user2", "user2@gmail.com", "password2", ""));
