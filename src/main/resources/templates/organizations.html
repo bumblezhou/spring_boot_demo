@@ -5,43 +5,88 @@
     <title>Organizations</title>
     <meta charset="UTF-8">
     <th:block th:replace="~{fragments/bootstrap_ref :: bootstrap_css_js}" />
-    <th:block th:replace="~{fragments/vuejs_ref :: vue_js}" />
+    <th:block th:replace="~{fragments/vuejs_ref :: vue_axios_js}" />
+    <th:block th:replace="~{fragments/jquery_ref :: jquery_js}" />
+    <th:block th:replace="~{fragments/bootstrap_treeview_ref :: treeview_js_css}" />
 </head>
 
 <body>
   <div th:replace="~{fragments/navigation :: navigation}"></div>
-  <h2>Organization Management</h2>
-  <div id="app">
-    <button @click="increment()">
-      Increment
-    </button>
-    <div>{{ count }} * {{ count }} = {{ react }}</div>
-    <h1 v-show="ok">Hello!</h1>
-  </div>
-  <script>
-    const { createApp, ref, computed } = Vue
-  
-    createApp({
-      setup() {
-        const count = ref(0);
-        const react = computed(() => count.value * count.value);
-        const ok = ref(true);
+  <div id="app" class="container-fluid">
+    <div class="row">
+        <!-- Left: Organization Tree -->
+        <div class="col-md-8">
+            <h5 class="mt-3">Organization Tree</h5>
+            <div id="organizationTree" class="mt-3"></div>
+        </div>
 
-        function increment() {
-          // .value is needed in JavaScript
-          count.value++;
-          ok.value = count.value % 2 == 0 ? true : false;
-        }
+        <!-- Right: Organization Details -->
+        <div class="col-md-4">
+            <h5 class="mt-3">Organization Details</h5>
+            <div v-if="selectedOrg" class="card mt-3">
+                <div class="card-body">
+                    <p><strong>Name:</strong> {{ selectedOrg.name }}</p>
+                    <p><strong>Address:</strong> {{ selectedOrg.address }}</p>
+                    <p><strong>Description:</strong> {{ selectedOrg.description }}</p>
+                </div>
+            </div>
+            <div v-else class="alert alert-info mt-3">
+                Select an organization from the tree to view details.
+            </div>
+        </div>
+    </div>
+</div>
 
-        // expose the ref to the template
-        return {
-          count,
-          react,
-          ok,
-          increment
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                organizations: [],
+                selectedOrg: null
+            };
+        },
+        mounted() {
+            this.loadOrganizationTree();
+        },
+        methods: {
+            loadOrganizationTree() {
+                axios.get('/api/organizations/loadTree')
+                    .then(response => {
+                        // Initialize the tree view with the received data
+                        this.organizations = this.buildTree(response.data);
+
+                        $('#organizationTree').treeview({
+                            color: "#428bca",
+                            levels: 99,
+                            expandIcon: 'glyphicon glyphicon-chevron-right',
+                            collapseIcon: 'glyphicon glyphicon-chevron-down',
+                            nodeIcon: 'glyphicon glyphicon-bookmark',
+                            data: this.organizations, // tree data
+                            onNodeSelected: (event, node) => {
+                                this.selectedOrg = node;
+                            }
+                        });
+                    })
+                    .catch(error => {
+                        console.error("There was an error loading the organization tree:", error);
+                    });
+            },
+            buildTree(data) {
+                // Recursively build tree data structure
+                return data.map(org => {
+                    return {
+                        text: org.name,
+                        name: org.name,
+                        address: org.address,
+                        description: org.description,
+                        nodes: org.children ? this.buildTree(org.children) : []
+                    };
+                });
+            }
         }
-      }
-    }).mount('#app')
-  </script>
+    });
+
+    app.mount('#app');
+</script>
 </body>
 </html>
