@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.springboot.demo.model.ProductType;
@@ -26,18 +28,23 @@ public class ProductTypeServiceImpl implements ProductTypeService {
         return (List<ProductType>) procurementTypeRepository.findAll();
     }
 
+    @Override
+    public Page<ProductType> fetchItemsByPage(Pageable pageable) {
+        return procurementTypeRepository.findAll(pageable);
+    }
+
     // Update operation
     @Override
-    public ProductType save(ProductType procurementType, Long Id) {
+    public ProductType update(ProductType productType, Long Id) {
 
         ProductType depDB = procurementTypeRepository.findById(Id).get();
 
-        if (Objects.nonNull(procurementType.getName()) && !"".equalsIgnoreCase(procurementType.getName())) {
-            depDB.setName(procurementType.getName());
+        if (Objects.nonNull(productType.getName()) && !"".equalsIgnoreCase(productType.getName())) {
+            depDB.setName(productType.getName());
         }
 
-        if (Objects.nonNull(procurementType.getDescription()) && !"".equalsIgnoreCase(procurementType.getDescription())) {
-            depDB.setDescription(procurementType.getDescription());
+        if (Objects.nonNull(productType.getDescription()) && !"".equalsIgnoreCase(productType.getDescription())) {
+            depDB.setDescription(productType.getDescription());
         }
 
         return procurementTypeRepository.save(depDB);

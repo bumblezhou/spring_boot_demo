@@ -5,19 +5,19 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.example.springboot.demo.model.ProductType;
+import com.example.springboot.demo.model.Supplier;
 
-public interface ProductTypeService {
+public interface SupplierService {
     // Save operation
-    ProductType save(ProductType productType);
+    Supplier save(Supplier supplier);
 
     // Read operation
-    List<ProductType> fetchAll();
+    List<Supplier> fetchAll();
 
-    Page<ProductType> fetchItemsByPage(Pageable pageable);
+    Page<Supplier> fetchItemsByPage(Pageable pageable);
 
     // Update operation
-    ProductType update(ProductType productType, Long Id);
+    Supplier update(Supplier supplier, Long Id);
 
     // Delete operation
     void delete(Long Id);

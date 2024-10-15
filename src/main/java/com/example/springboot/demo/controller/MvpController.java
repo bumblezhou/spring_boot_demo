@@ -19,11 +19,6 @@ public class MvpController {
         return "index";
     }
 
-    @GetMapping("/procurements")
-    public String procurements(Model model){
-        return "procurements";
-    }
-
     // @Autowired private DepartmentService departmentService;
     @GetMapping("/departments")
     public String departments(Model model){
@@ -32,5 +27,15 @@ public class MvpController {
         // model.addAttribute("departments", departments);
 
         return "departments";
+    }
+
+    @GetMapping("/procurements")
+    public String procurements(Model model){
+        return "procurements";
+    }
+
+    @GetMapping("/products")
+    public String products(Model model){
+        return "products";
     }
 }
