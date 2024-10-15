@@ -1,9 +1,8 @@
 package com.example.springboot.demo.config;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
+import java.util.*;
 
-import org.hibernate.type.TrueFalseConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -142,44 +141,214 @@ public class DataLoader implements ApplicationRunner {
         }
         
         if(organizationRepository.count() == 0) {
-            // Create initial organizations
-            Organization org1 = Organization.builder()
-                    .name("Head Office")
-                    .address("123 Main St")
-                    .description("Main headquarters")
-                    .parentId(null) // No parent, this is a root organization
-                    .build();
+            // Create a list of sample organizations
+            List<Organization> organizations = new ArrayList<>();
 
+            // Level 1 (Root)
+            Organization org1 = Organization.builder()
+                    .name("Global Corp")
+                    .address("Global Headquarters")
+                    .description("The top-level organization")
+                    .parentId(null)  // Root organization
+                    .build();
+            organizations.add(org1);
+
+            // Level 2 (Divisions)
             Organization org2 = Organization.builder()
-                    .name("Sales Department")
-                    .address("456 Elm St")
-                    .description("Handles all sales operations")
-                    .parentId(1L) // Child of Head Office
+                    .name("North America Division")
+                    .address("USA, New York")
+                    .description("Regional division for North America")
+                    .parentId(1L) // Parent is Global Corp
                     .build();
 
             Organization org3 = Organization.builder()
-                    .name("HR Department")
-                    .address("789 Pine St")
-                    .description("Handles all HR matters")
-                    .parentId(1L) // Child of Head Office
+                    .name("Europe Division")
+                    .address("Germany, Berlin")
+                    .description("Regional division for Europe")
+                    .parentId(1L)
                     .build();
 
             Organization org4 = Organization.builder()
-                    .name("North Region Sales")
-                    .address("101 Maple St")
-                    .description("Sales office for the northern region")
-                    .parentId(2L) // Child of Sales Department
+                    .name("Asia-Pacific Division")
+                    .address("China, Shanghai")
+                    .description("Regional division for Asia-Pacific")
+                    .parentId(1L)
                     .build();
 
             Organization org5 = Organization.builder()
-                    .name("South Region Sales")
-                    .address("202 Birch St")
-                    .description("Sales office for the southern region")
-                    .parentId(2L) // Child of Sales Department
+                    .name("South America Division")
+                    .address("Brazil, São Paulo")
+                    .description("Regional division for South America")
+                    .parentId(1L)
                     .build();
 
-            // Save organizations to the database
-            organizationRepository.saveAll(Arrays.asList(org1, org2, org3, org4, org5));
+            organizations.add(org2);
+            organizations.add(org3);
+            organizations.add(org4);
+            organizations.add(org5);
+
+            // North America Division (Level 3 - Departments)
+            Organization org6 = Organization.builder()
+                    .name("USA Operations")
+                    .address("USA, San Francisco")
+                    .description("Operations in the United States")
+                    .parentId(2L) // Parent is North America Division
+                    .build();
+
+            Organization org7 = Organization.builder()
+                    .name("Canada Operations")
+                    .address("Canada, Toronto")
+                    .description("Operations in Canada")
+                    .parentId(2L)
+                    .build();
+
+            organizations.add(org6);
+            organizations.add(org7);
+
+            // Europe Division (Level 3 - Departments)
+            Organization org8 = Organization.builder()
+                    .name("Germany Operations")
+                    .address("Germany, Munich")
+                    .description("Operations in Germany")
+                    .parentId(3L) // Parent is Europe Division
+                    .build();
+
+            Organization org9 = Organization.builder()
+                    .name("UK Operations")
+                    .address("UK, London")
+                    .description("Operations in the UK")
+                    .parentId(3L)
+                    .build();
+
+            Organization org10 = Organization.builder()
+                    .name("France Operations")
+                    .address("France, Paris")
+                    .description("Operations in France")
+                    .parentId(3L)
+                    .build();
+
+            organizations.add(org8);
+            organizations.add(org9);
+            organizations.add(org10);
+
+            // Asia-Pacific Division (Level 3 - Departments)
+            Organization org11 = Organization.builder()
+                    .name("China Operations")
+                    .address("China, Beijing")
+                    .description("Operations in China")
+                    .parentId(4L) // Parent is Asia-Pacific Division
+                    .build();
+
+            Organization org12 = Organization.builder()
+                    .name("Japan Operations")
+                    .address("Japan, Tokyo")
+                    .description("Operations in Japan")
+                    .parentId(4L)
+                    .build();
+
+            Organization org13 = Organization.builder()
+                    .name("Australia Operations")
+                    .address("Australia, Sydney")
+                    .description("Operations in Australia")
+                    .parentId(4L)
+                    .build();
+
+            organizations.add(org11);
+            organizations.add(org12);
+            organizations.add(org13);
+
+            // South America Division (Level 3 - Departments)
+            Organization org14 = Organization.builder()
+                    .name("Brazil Operations")
+                    .address("Brazil, Rio de Janeiro")
+                    .description("Operations in Brazil")
+                    .parentId(5L) // Parent is South America Division
+                    .build();
+
+            Organization org15 = Organization.builder()
+                    .name("Argentina Operations")
+                    .address("Argentina, Buenos Aires")
+                    .description("Operations in Argentina")
+                    .parentId(5L)
+                    .build();
+
+            organizations.add(org14);
+            organizations.add(org15);
+
+            // Level 4 - Sub-departments under USA Operations (North America)
+            Organization org16 = Organization.builder()
+                    .name("California Branch")
+                    .address("USA, Los Angeles")
+                    .description("Handles operations in California")
+                    .parentId(6L) // Parent is USA Operations
+                    .build();
+
+            Organization org17 = Organization.builder()
+                    .name("New York Branch")
+                    .address("USA, New York City")
+                    .description("Handles operations in New York")
+                    .parentId(6L)
+                    .build();
+
+            organizations.add(org16);
+            organizations.add(org17);
+
+            // Level 4 - Sub-departments under Germany Operations (Europe)
+            Organization org18 = Organization.builder()
+                    .name("Berlin Office")
+                    .address("Germany, Berlin")
+                    .description("Operations in Berlin")
+                    .parentId(8L) // Parent is Germany Operations
+                    .build();
+
+            Organization org19 = Organization.builder()
+                    .name("Munich Office")
+                    .address("Germany, Munich")
+                    .description("Operations in Munich")
+                    .parentId(8L)
+                    .build();
+
+            organizations.add(org18);
+            organizations.add(org19);
+
+            // Level 5 - Teams under California Branch (North America)
+            Organization org20 = Organization.builder()
+                    .name("California Sales Team")
+                    .address("USA, Los Angeles")
+                    .description("Sales team for California")
+                    .parentId(16L) // Parent is California Branch
+                    .build();
+
+            Organization org21 = Organization.builder()
+                    .name("California Marketing Team")
+                    .address("USA, San Diego")
+                    .description("Marketing team for California")
+                    .parentId(16L)
+                    .build();
+
+            organizations.add(org20);
+            organizations.add(org21);
+
+            // Level 6 - Sub-teams under California Sales Team (North America)
+            Organization org22 = Organization.builder()
+                    .name("West Coast Sales")
+                    .address("USA, San Francisco")
+                    .description("Sales team for the west coast")
+                    .parentId(20L) // Parent is California Sales Team
+                    .build();
+
+            Organization org23 = Organization.builder()
+                    .name("East Coast Sales")
+                    .address("USA, Los Angeles")
+                    .description("Sales team for the east coast")
+                    .parentId(20L)
+                    .build();
+
+            organizations.add(org22);
+            organizations.add(org23);
+
+            // Save all organizations in bulk
+            organizationRepository.saveAll(organizations);
 
             System.out.println("Initial Organization data loaded into SQLite");
         } else {
