@@ -30,7 +30,7 @@ public class ProductController {
  
     // Save operation
     @PostMapping("/api/products")
-    public Product saveDepartment(@Valid @RequestBody Product product)
+    public Product save(@Valid @RequestBody Product product)
     {
         return productService.save(product);
     }
@@ -54,7 +54,7 @@ public class ProductController {
     }
 
     /*
-     * Example: http://localhost:8080/api/products/findProducts?page=0&size=10&sortBy=id&productTypeIds=1,2,3&supplierIds=4,5,6&name=ProductName&specifications=Specs&priceMin=1&priceMax=10
+     * Example: http://localhost:8080/api/products/findItems?page=0&size=10&sortBy=id&productTypeIds=1,2,3&supplierIds=4,5,6&name=ProductName&specifications=Specs&priceMin=1&priceMax=10
      *
      * @RequestParam(defaultValue = "0") int page,
      * @RequestParam(defaultValue = "10") int size,
@@ -66,8 +66,8 @@ public class ProductController {
      * @RequestParam(required = false) String priceMin,
      * @RequestParam(required = false) String priceMax
     */
-    @GetMapping("/api/products/findProducts")
-    public ResponseEntity<Page<Product>> findProducts(
+    @GetMapping("/api/products/findItems")
+    public ResponseEntity<Page<Product>> findItems(
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size,
         @RequestParam(defaultValue = "id") String sortBy,

@@ -353,7 +353,7 @@
                 const priceMin = filters.value.priceMin ? filters.value.priceMin : '';
                 const priceMax = filters.value.priceMax ? filters.value.priceMax : '';
                 // const priceRange = filters.value.priceMin && filters.value.priceMax ? `${filters.value.priceMin},${filters.value.priceMax}` : '';
-                const url = `/api/products/findProducts?page=${currentPage.value}&size=${pageSize}` +
+                const url = `/api/products/findItems?page=${currentPage.value}&size=${pageSize}` +
                             `&productTypeIds=${productTypeIds}&supplierIds=${supplierIds}` +
                             `&name=${filters.value.name}&specifications=${filters.value.specifications}` +
                             `&priceMin=${priceMin}` +
@@ -392,7 +392,5 @@
         }
     }).mount('#app');
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
