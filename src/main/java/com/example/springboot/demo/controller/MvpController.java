@@ -29,9 +29,9 @@ public class MvpController {
         return "departments";
     }
 
-    @GetMapping("/procurements")
+    @GetMapping("/organizations")
     public String procurements(Model model){
-        return "procurements";
+        return "organizations";
     }
 
     @GetMapping("/products")

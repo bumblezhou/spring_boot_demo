@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Departmetns</title>
+    <title>Organizations</title>
     <meta charset="UTF-8">
     <th:block th:replace="~{fragments/bootstrap_ref :: bootstrap_css_js}" />
     <th:block th:replace="~{fragments/vuejs_ref :: vue_js}" />
@@ -10,6 +10,7 @@
 
 <body>
   <div th:replace="~{fragments/navigation :: navigation}"></div>
+  <h2>Organization Management</h2>
   <div id="app">
     <button @click="increment()">
       Increment

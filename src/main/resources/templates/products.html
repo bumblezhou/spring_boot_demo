@@ -39,20 +39,20 @@
         </div>
 
         <!-- Search by Price Range -->
-        <div class="col-md-1">
+        <div class="col-md-2">
             <input type="number" class="form-control" v-model="filters.priceMin" placeholder="Min Price">
         </div>
-        <div class="col-md-1">
+        <div class="col-md-2">
             <input type="number" class="form-control" v-model="filters.priceMax" placeholder="Max Price">
         </div>
 
         <!-- Search by Specifications -->
-        <div class="col-md-2">
+        <div class="col-md-1">
             <input type="text" class="form-control" v-model="filters.specifications" placeholder="Search by Specifications">
         </div>
 
         <!-- Search Button -->
-        <div class="col-md-2">
+        <div class="col-md-1">
             <button class="btn btn-primary" @click="searchProducts">Search</button>
         </div>
     </div>
