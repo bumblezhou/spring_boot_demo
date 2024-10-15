@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,322 +8,204 @@
     <th:block th:replace="~{fragments/bootstrap_ref :: bootstrap_css_js}" />
     <th:block th:replace="~{fragments/vuejs_ref :: vue_axios_js}" />
 </head>
+
 <body>
-<div th:replace="~{fragments/navigation :: navigation}"></div>
-<div id="app" class="container mt-5">
-    <h2>Product Management</h2>
+    <div th:replace="~{fragments/navigation :: navigation}"></div>
+    <div id="app" class="container mt-5">
+        <h2>Product Management</h2>
 
-    <!-- Add Product Button -->
-    <button class="btn btn-primary my-3" @click="openModal(null)">Add Product</button>
+        <!-- Add Product Button -->
+        <button class="btn btn-primary my-3" @click="openModal(null)">Add Product</button>
 
-    <!-- Search Form -->
-    <div class="row mb-4 my-3">
-        <!-- Search by Name -->
-        <div class="col-md-2">
-            <input type="text" class="form-control" v-model="filters.name" placeholder="Search by Name">
+        <!-- Search Form -->
+        <div class="row mb-4 my-3">
+            <!-- Search by Name -->
+            <div class="col-md-2">
+                <input type="text" class="form-control" v-model="filters.name" placeholder="Search by Name">
+            </div>
+
+            <!-- Search by Product Type -->
+            <div class="col-md-2">
+                <select class="form-select" v-model="filters.productTypeId">
+                    <option value="">All Types</option>
+                    <option v-for="type in productTypes" :value="type.id">{{ type.name }}</option>
+                </select>
+            </div>
+
+            <!-- Search by Supplier -->
+            <div class="col-md-2">
+                <select class="form-select" v-model="filters.supplierId">
+                    <option value="">All Suppliers</option>
+                    <option v-for="supplier in suppliers" :value="supplier.id">{{ supplier.name }}</option>
+                </select>
+            </div>
+
+            <!-- Search by Price Range -->
+            <div class="col-md-2">
+                <input type="number" class="form-control" v-model="filters.priceMin" placeholder="Min Price">
+            </div>
+            <div class="col-md-2">
+                <input type="number" class="form-control" v-model="filters.priceMax" placeholder="Max Price">
+            </div>
+
+            <!-- Search by Specifications -->
+            <div class="col-md-1">
+                <input type="text" class="form-control" v-model="filters.specifications"
+                    placeholder="Search by Specifications">
+            </div>
+
+            <!-- Search Button -->
+            <div class="col-md-1">
+                <button class="btn btn-primary" @click="searchProducts">Search</button>
+            </div>
         </div>
 
-        <!-- Search by Product Type -->
-        <div class="col-md-2">
-            <select class="form-select" v-model="filters.productTypeId">
-                <option value="">All Types</option>
-                <option v-for="type in productTypes" :value="type.id">{{ type.name }}</option>
-            </select>
-        </div>
+        <!-- Products Table with Pagination -->
+        <h3>Product List</h3>
+        <table class="table table-bordered table-striped mt-3">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Supplier</th>
+                    <th>Price</th>
+                    <th>Image</th>
+                    <th style="width: 140px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="product in products" :key="product.id">
+                    <td>{{ product.id }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ getProductTypeName(product.productTypeId) }}</td>
+                    <td>{{ getSupplierName(product.supplierId) }}</td>
+                    <td>{{ product.price }}</td>
+                    <td><img v-bind:src="product.imageUrl" style="width: 55px;"></td>
+                    <td>
+                        <button class="btn btn-sm btn-warning" @click="openModal(product)">Edit</button>
+                        &nbsp;
+                        <button class="btn btn-sm btn-danger" @click="deleteProduct(product.id)">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
-        <!-- Search by Supplier -->
-        <div class="col-md-2">
-            <select class="form-select" v-model="filters.supplierId">
-                <option value="">All Suppliers</option>
-                <option v-for="supplier in suppliers" :value="supplier.id">{{ supplier.name }}</option>
-            </select>
-        </div>
+        <!-- Pagination Controls -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <!-- Previous Button -->
+                <li :class="['page-item', { disabled: currentPage === 0 }]">
+                    <a class="page-link" href="#" @click.prevent="changePage(currentPage - 1)">Previous</a>
+                </li>
 
-        <!-- Search by Price Range -->
-        <div class="col-md-2">
-            <input type="number" class="form-control" v-model="filters.priceMin" placeholder="Min Price">
-        </div>
-        <div class="col-md-2">
-            <input type="number" class="form-control" v-model="filters.priceMax" placeholder="Max Price">
-        </div>
+                <!-- Page Numbers -->
+                <li v-for="page in visiblePages" :key="page"
+                    :class="['page-item', { active: currentPage === page - 1 }]">
+                    <a class="page-link" href="#" @click.prevent="changePage(page - 1)">{{ page }}</a>
+                </li>
 
-        <!-- Search by Specifications -->
-        <div class="col-md-1">
-            <input type="text" class="form-control" v-model="filters.specifications" placeholder="Search by Specifications">
-        </div>
+                <!-- "..." for More Pages -->
+                <li v-if="showMorePages" class="page-item">
+                    <a class="page-link" href="#" @click.prevent="showNextPageGroup()">...</a>
+                </li>
 
-        <!-- Search Button -->
-        <div class="col-md-1">
-            <button class="btn btn-primary" @click="searchProducts">Search</button>
-        </div>
-    </div>
+                <!-- Next Button -->
+                <li :class="['page-item', { disabled: currentPage === totalPages - 1 }]">
+                    <a class="page-link" href="#" @click.prevent="changePage(currentPage + 1)">Next</a>
+                </li>
+            </ul>
+        </nav>
 
-    <!-- Products Table with Pagination -->
-    <h3>Product List</h3>
-    <table class="table table-bordered table-striped mt-3">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Supplier</th>
-                <th>Price</th>
-                <th>Image</th>
-                <th style="width: 140px;">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="product in products" :key="product.id">
-                <td>{{ product.id }}</td>
-                <td>{{ product.name }}</td>
-                <td>{{ getProductTypeName(product.productTypeId) }}</td>
-                <td>{{ getSupplierName(product.supplierId) }}</td>
-                <td>{{ product.price }}</td>
-                <td><img v-bind:src="product.imageUrl" style="width: 55px;"></td>
-                <td>
-                    <button class="btn btn-sm btn-warning" @click="openModal(product)">Edit</button>
-                    &nbsp;
-                    <button class="btn btn-sm btn-danger" @click="deleteProduct(product.id)">Delete</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-
-    <!-- Pagination Controls -->
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center">
-        <!-- Previous Button -->
-        <li :class="['page-item', { disabled: currentPage === 0 }]">
-            <a class="page-link" href="#" @click.prevent="changePage(currentPage - 1)">Previous</a>
-        </li>
-    
-        <!-- Page Numbers -->
-        <li v-for="page in visiblePages" :key="page" :class="['page-item', { active: currentPage === page - 1 }]">
-            <a class="page-link" href="#" @click.prevent="changePage(page - 1)">{{ page }}</a>
-        </li>
-    
-        <!-- "..." for More Pages -->
-        <li v-if="showMorePages" class="page-item">
-            <a class="page-link" href="#" @click.prevent="showNextPageGroup()">...</a>
-        </li>
-    
-        <!-- Next Button -->
-        <li :class="['page-item', { disabled: currentPage === totalPages - 1 }]">
-            <a class="page-link" href="#" @click.prevent="changePage(currentPage + 1)">Next</a>
-        </li>
-        </ul>
-    </nav>
-
-    <!-- Product Modal (Add/Edit) -->
-    <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form @submit.prevent="saveProduct" enctype="multipart/form-data">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="productModalLabel">{{ isEdit ? 'Edit Product' : 'Add Product' }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <input type="hidden" v-model="product.id">
-
-                        <div class="mb-3">
-                            <label for="productName" class="form-label">Product Name</label>
-                            <input id="productName" type="text" class="form-control" v-model="product.name" required>
+        <!-- Product Modal (Add/Edit) -->
+        <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form @submit.prevent="saveProduct" enctype="multipart/form-data">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="productModalLabel">{{ isEdit ? 'Edit Product' : 'Add Product' }}
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
+                        <div class="modal-body">
+                            <input type="hidden" v-model="product.id">
 
-                        <div class="mb-3">
-                            <label for="productType" class="form-label">Product Type</label>
-                            <select id="productType" class="form-select" v-model="product.productTypeId" required>
-                                <option v-for="type in productTypes" :value="type.id">{{ type.name }}</option>
-                            </select>
-                        </div>
+                            <div class="mb-3">
+                                <label for="productName" class="form-label">Product Name</label>
+                                <input id="productName" type="text" class="form-control" v-model="product.name"
+                                    required>
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="supplier" class="form-label">Supplier</label>
-                            <select id="supplier" class="form-select" v-model="product.supplierId" required>
-                                <option v-for="supplier in suppliers" :value="supplier.id">{{ supplier.name }}</option>
-                            </select>
-                        </div>
+                            <div class="mb-3">
+                                <label for="productType" class="form-label">Product Type</label>
+                                <select id="productType" class="form-select" v-model="product.productTypeId" required>
+                                    <option v-for="type in productTypes" :value="type.id">{{ type.name }}</option>
+                                </select>
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="productPrice" class="form-label">Price</label>
-                            <input id="productPrice" type="number" class="form-control" v-model="product.price" step="0.01" required>
-                        </div>
+                            <div class="mb-3">
+                                <label for="supplier" class="form-label">Supplier</label>
+                                <select id="supplier" class="form-select" v-model="product.supplierId" required>
+                                    <option v-for="supplier in suppliers" :value="supplier.id">{{ supplier.name }}
+                                    </option>
+                                </select>
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="imageFile" class="form-label">Upload Image</label>
-                            <input id="imageFile" type="file" class="form-control" @change="uploadImage">
-                        </div>
+                            <div class="mb-3">
+                                <label for="productPrice" class="form-label">Price</label>
+                                <input id="productPrice" type="number" class="form-control" v-model="product.price"
+                                    step="0.01" required>
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="imageUrl" class="form-label">Image URL</label>
-                            <input id="imageUrl" type="text" class="form-control" v-model="product.imageUrl" readonly>
-                        </div>
+                            <div class="mb-3">
+                                <label for="imageFile" class="form-label">Upload Image</label>
+                                <input id="imageFile" type="file" class="form-control" @change="uploadImage">
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="specifications" class="form-label">Specifications</label>
-                            <textarea id="specifications" class="form-control" v-model="product.specifications" rows="3"></textarea>
-                        </div>
+                            <div class="mb-3">
+                                <label for="imageUrl" class="form-label">Image URL</label>
+                                <input id="imageUrl" type="text" class="form-control" v-model="product.imageUrl"
+                                    readonly>
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="detailsUrl" class="form-label">Details URL</label>
-                            <input id="detailsUrl" type="url" class="form-control" v-model="product.detailsUrl" required>
-                        </div>
+                            <div class="mb-3">
+                                <label for="specifications" class="form-label">Specifications</label>
+                                <textarea id="specifications" class="form-control" v-model="product.specifications"
+                                    rows="3"></textarea>
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Description</label>
-                            <textarea id="description" class="form-control" v-model="product.description" rows="3"></textarea>
+                            <div class="mb-3">
+                                <label for="detailsUrl" class="form-label">Details URL</label>
+                                <input id="detailsUrl" type="url" class="form-control" v-model="product.detailsUrl"
+                                    required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea id="description" class="form-control" v-model="product.description"
+                                    rows="3"></textarea>
+                            </div>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">{{ isEdit ? 'Update' : 'Add' }} Product</button>
-                    </div>
-                </form>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">{{ isEdit ? 'Update' : 'Add' }}
+                                Product</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-    const { createApp, ref, computed, onMounted } = Vue;
+    <script>
+        const { createApp, ref, computed, onMounted } = Vue;
 
-    createApp({
-        setup() {
-            const products = ref([]);
-            const productTypes = ref([]);
-            const suppliers = ref([]);
-            const product = ref({
-                id: null,
-                productTypeId: '',
-                supplierId: '',
-                name: '',
-                price: '',
-                imageUrl: '',
-                specifications: '',
-                detailsUrl: '',
-                description: ''
-            });
-            const filters = ref({
-                name: '',
-                productTypeId: '',
-                supplierId: '',
-                priceMin: '',
-                priceMax: '',
-                specifications: ''
-            });
-            const currentPage = ref(0); // Start from 0
-            const pageSize = 10;
-            const totalPages = ref(0);
-            const maxVisiblePages = 5;  // Maximum visible pages at a time
-            const pageGroupStart = ref(1);  // Tracks the first page in the current group
-            const isSearchActive = ref(false);  // Tracks whether a search is active
-            const totalProducts = ref(0);
-            const isEdit = ref(false);
-
-            // Load products, product types, and suppliers on mount
-            onMounted(() => {
-                loadProducts();
-                loadProductTypes();
-                loadSuppliers();
-            });
-
-            const loadProducts = () => {
-                isSearchActive.value = false;  // Reset search state
-                axios.get(`/api/products/fetchItemsByPage?page=${currentPage.value}&size=${pageSize}`)
-                    .then(response => {
-                        products.value = response.data.content;
-                        totalProducts.value = response.data.totalElements;
-                        totalPages.value = response.data.totalPages;
-                    })
-                    .catch(error => {
-                        console.error('Error loading products:', error);
-                    });
-            };
-
-            const loadProductTypes = () => {
-                axios.get('/api/product_types')
-                    .then(response => {
-                        productTypes.value = response.data;
-                    })
-                    .catch(error => {
-                        console.error('Error loading product types:', error);
-                    });
-            };
-
-            const loadSuppliers = () => {
-                axios.get('/api/suppliers')
-                    .then(response => {
-                        suppliers.value = response.data;
-                    })
-                    .catch(error => {
-                        console.error('Error loading suppliers:', error);
-                    });
-            };
-
-            const getProductTypeName = (id) => {
-                const type = productTypes.value.find(type => type.id === id);
-                return type ? type.name : 'Unknown';
-            };
-
-            const getSupplierName = (id) => {
-                const supplier = suppliers.value.find(supplier => supplier.id === id);
-                return supplier ? supplier.name : 'Unknown';
-            };
-
-            const saveProduct = () => {
-                if (product.value.id) {
-                    axios.put(`/api/products/${product.value.id}`, product.value)
-                        .then(() => {
-                            loadProducts();
-                            closeModal();
-                        })
-                        .catch(error => {
-                            console.error('Error updating product:', error);
-                        });
-                } else {
-                    axios.post('/api/products', product.value)
-                        .then(() => {
-                            loadProducts();
-                            closeModal();
-                        })
-                        .catch(error => {
-                            console.error('Error adding product:', error);
-                        });
-                }
-            };
-
-            const deleteProduct = (id) => {
-                if (confirm('Are you sure you want to delete this product?')) {
-                    axios.delete(`/api/products/${id}`)
-                        .then(() => {
-                            loadProducts();
-                        })
-                        .catch(error => {
-                            console.error('Error deleting product:', error);
-                        });
-                }
-            };
-
-            const openModal = (prod) => {
-                if (prod) {
-                    product.value = { ...prod };
-                    isEdit.value = true;
-                } else {
-                    resetForm();
-                    isEdit.value = false;
-                }
-                const modal = new bootstrap.Modal(document.getElementById('productModal'));
-                modal.show();
-            };
-
-            const closeModal = () => {
-                const modal = bootstrap.Modal.getInstance(document.getElementById('productModal'));
-                modal.hide();
-            };
-
-            const resetForm = () => {
-                product.value = {
+        createApp({
+            setup() {
+                const products = ref([]);
+                const productTypes = ref([]);
+                const suppliers = ref([]);
+                const product = ref({
                     id: null,
                     productTypeId: '',
                     supplierId: '',
@@ -332,134 +215,265 @@
                     specifications: '',
                     detailsUrl: '',
                     description: ''
-                };
-            };
-
-            const uploadImage = (event) => {
-                const file = event.target.files[0];
-                const formData = new FormData();
-                formData.append('file', file);
-
-                axios.post('/api/upload', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                })
-                .then(response => {
-                    product.value.imageUrl = response.data.url;
-                })
-                .catch(error => {
-                    console.error('Error uploading image:', error);
                 });
-            };
+                const filters = ref({
+                    name: '',
+                    productTypeId: '',
+                    supplierId: '',
+                    priceMin: '',
+                    priceMax: '',
+                    specifications: ''
+                });
+                const currentPage = ref(0); // Start from 0
+                const pageSize = 10;
+                const totalPages = ref(0);
+                const maxVisiblePages = 5;  // Maximum visible pages at a time
+                const pageGroupStart = ref(1);  // Tracks the first page in the current group
+                const isSearchActive = ref(false);  // Tracks whether a search is active
+                const totalProducts = ref(0);
+                const isEdit = ref(false);
 
-            const changePage = (page) => {
-                if (page >= 0 && page < totalPages.value) {
-                    currentPage.value = page;
-                    
-                    // Adjust pageGroupStart if we move out of current page group
-                    if (page < pageGroupStart.value - 1) {
-                        // Moving to a previous group, reset to 1-5
-                        pageGroupStart.value = 1;
-                    } else if (page >= pageGroupStart.value + maxVisiblePages - 1) {
-                        // Moving to next group, update start of page group
-                        pageGroupStart.value = pageGroupStart.value + maxVisiblePages;
-                    }
-
-                    // Load next page of either search results or normal products
-                    if (isSearchActive.value) {
-                        searchProducts();
-                    } else {
-                        loadProducts();
-                    }
-                }
-            };
-
-            // Determine visible pages (up to 5 at a time)
-            const visiblePages = computed(() => {
-                const pages = [];
-                const endPage = Math.min(pageGroupStart.value + maxVisiblePages - 1, totalPages.value);
-                for (let i = pageGroupStart.value; i <= endPage; i++) {
-                    pages.push(i);
-                }
-                return pages;
-            });
-
-            // Determine if "..." should be shown for more pages
-            const showMorePages = computed(() => {
-                return totalPages.value > pageGroupStart.value + maxVisiblePages - 1;
-            });
-
-            // Load next group of pages when clicking "..."
-            const showNextPageGroup = () => {
-                pageGroupStart.value += maxVisiblePages;
-                const firstPageOfNextGroup = pageGroupStart.value - 1; // First page of the next group
-
-                if (firstPageOfNextGroup < totalPages.value) {
-                    currentPage.value = firstPageOfNextGroup; // Navigate to the first page of the new group
-                    changePage(firstPageOfNextGroup);
-                }
-            };
-
-            // Search Products API Call
-            const searchProducts = () => {
-                isSearchActive.value = true;  // Mark that search is active
-                const productTypeIds = filters.value.productTypeId ? filters.value.productTypeId : '';
-                const supplierIds = filters.value.supplierId ? filters.value.supplierId : '';
-                const priceMin = filters.value.priceMin ? filters.value.priceMin : '';
-                const priceMax = filters.value.priceMax ? filters.value.priceMax : '';
-                if(filters.value.name == '' && filters.value.specifications == '' && productTypeIds == '' && supplierIds == '' && priceMin == '' && priceMax == '') {
-                    // invalid search criteria
-                    isSearchActive.value = false;  // Reset search state
+                // Load products, product types, and suppliers on mount
+                onMounted(() => {
                     loadProducts();
-                    return;
-                }
-                // const priceRange = filters.value.priceMin && filters.value.priceMax ? `${filters.value.priceMin},${filters.value.priceMax}` : '';
-                const url = `/api/products/findItems?page=${currentPage.value}&size=${pageSize}` +
-                            `&productTypeIds=${productTypeIds}&supplierIds=${supplierIds}` +
-                            `&name=${filters.value.name}&specifications=${filters.value.specifications}` +
-                            `&priceMin=${priceMin}` +
-                            `&priceMax=${priceMax}`;
+                    loadProductTypes();
+                    loadSuppliers();
+                });
 
-                axios.get(url)
-                    .then(response => {
-                        products.value = response.data.content;
-                        totalPages.value = response.data.totalPages;
-                        if (currentPage.value != 0 && !(currentPage.value in visiblePages.value) && totalPages.value >= 1) {
-                            currentPage.value = 0;
-                            changePage(currentPage.value);
+                const loadProducts = () => {
+                    isSearchActive.value = false;  // Reset search state
+                    axios.get(`/api/products/fetchItemsByPage?page=${currentPage.value}&size=${pageSize}`)
+                        .then(response => {
+                            products.value = response.data.content;
+                            totalProducts.value = response.data.totalElements;
+                            totalPages.value = response.data.totalPages;
+                        })
+                        .catch(error => {
+                            console.error('Error loading products:', error);
+                        });
+                };
+
+                const loadProductTypes = () => {
+                    axios.get('/api/product_types')
+                        .then(response => {
+                            productTypes.value = response.data;
+                        })
+                        .catch(error => {
+                            console.error('Error loading product types:', error);
+                        });
+                };
+
+                const loadSuppliers = () => {
+                    axios.get('/api/suppliers')
+                        .then(response => {
+                            suppliers.value = response.data;
+                        })
+                        .catch(error => {
+                            console.error('Error loading suppliers:', error);
+                        });
+                };
+
+                const getProductTypeName = (id) => {
+                    const type = productTypes.value.find(type => type.id === id);
+                    return type ? type.name : 'Unknown';
+                };
+
+                const getSupplierName = (id) => {
+                    const supplier = suppliers.value.find(supplier => supplier.id === id);
+                    return supplier ? supplier.name : 'Unknown';
+                };
+
+                const saveProduct = () => {
+                    if (product.value.id) {
+                        axios.put(`/api/products/${product.value.id}`, product.value)
+                            .then(() => {
+                                loadProducts();
+                                closeModal();
+                            })
+                            .catch(error => {
+                                console.error('Error updating product:', error);
+                            });
+                    } else {
+                        axios.post('/api/products', product.value)
+                            .then(() => {
+                                loadProducts();
+                                closeModal();
+                            })
+                            .catch(error => {
+                                console.error('Error adding product:', error);
+                            });
+                    }
+                };
+
+                const deleteProduct = (id) => {
+                    if (confirm('Are you sure you want to delete this product?')) {
+                        axios.delete(`/api/products/${id}`)
+                            .then(() => {
+                                loadProducts();
+                            })
+                            .catch(error => {
+                                console.error('Error deleting product:', error);
+                            });
+                    }
+                };
+
+                const openModal = (prod) => {
+                    if (prod) {
+                        product.value = { ...prod };
+                        isEdit.value = true;
+                    } else {
+                        resetForm();
+                        isEdit.value = false;
+                    }
+                    const modal = new bootstrap.Modal(document.getElementById('productModal'));
+                    modal.show();
+                };
+
+                const closeModal = () => {
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('productModal'));
+                    modal.hide();
+                };
+
+                const resetForm = () => {
+                    product.value = {
+                        id: null,
+                        productTypeId: '',
+                        supplierId: '',
+                        name: '',
+                        price: '',
+                        imageUrl: '',
+                        specifications: '',
+                        detailsUrl: '',
+                        description: ''
+                    };
+                };
+
+                const uploadImage = (event) => {
+                    const file = event.target.files[0];
+                    const formData = new FormData();
+                    formData.append('file', file);
+
+                    axios.post('/api/upload', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
                         }
                     })
-                    .catch(error => {
-                        console.error('Error searching products:', error);
-                    });
-            };
+                        .then(response => {
+                            product.value.imageUrl = response.data.url;
+                        })
+                        .catch(error => {
+                            console.error('Error uploading image:', error);
+                        });
+                };
 
-            return {
-                products,
-                productTypes,
-                suppliers,
-                filters,
-                product,
-                currentPage,
-                totalPages,
-                isEdit,
-                saveProduct,
-                deleteProduct,
-                openModal,
-                closeModal,
-                uploadImage,
-                getProductTypeName,
-                getSupplierName,
-                searchProducts,
-                changePage,
-                visiblePages,
-                showMorePages,
-                showNextPageGroup,
-                resetForm
-            };
-        }
-    }).mount('#app');
-</script>
+                const changePage = (page) => {
+                    if (page >= 0 && page < totalPages.value) {
+                        currentPage.value = page;
+
+                        // Adjust pageGroupStart if we move out of current page group
+                        if (page < pageGroupStart.value - 1) {
+                            // Moving to a previous group, reset to 1-5
+                            pageGroupStart.value = 1;
+                        } else if (page >= pageGroupStart.value + maxVisiblePages - 1) {
+                            // Moving to next group, update start of page group
+                            pageGroupStart.value = pageGroupStart.value + maxVisiblePages;
+                        }
+
+                        // Load next page of either search results or normal products
+                        if (isSearchActive.value) {
+                            searchProducts();
+                        } else {
+                            loadProducts();
+                        }
+                    }
+                };
+
+                // Determine visible pages (up to 5 at a time)
+                const visiblePages = computed(() => {
+                    const pages = [];
+                    const endPage = Math.min(pageGroupStart.value + maxVisiblePages - 1, totalPages.value);
+                    for (let i = pageGroupStart.value; i <= endPage; i++) {
+                        pages.push(i);
+                    }
+                    return pages;
+                });
+
+                // Determine if "..." should be shown for more pages
+                const showMorePages = computed(() => {
+                    return totalPages.value > pageGroupStart.value + maxVisiblePages - 1;
+                });
+
+                // Load next group of pages when clicking "..."
+                const showNextPageGroup = () => {
+                    pageGroupStart.value += maxVisiblePages;
+                    const firstPageOfNextGroup = pageGroupStart.value - 1; // First page of the next group
+
+                    if (firstPageOfNextGroup < totalPages.value) {
+                        currentPage.value = firstPageOfNextGroup; // Navigate to the first page of the new group
+                        changePage(firstPageOfNextGroup);
+                    }
+                };
+
+                // Search Products API Call
+                const searchProducts = () => {
+                    isSearchActive.value = true;  // Mark that search is active
+                    const productTypeIds = filters.value.productTypeId ? filters.value.productTypeId : '';
+                    const supplierIds = filters.value.supplierId ? filters.value.supplierId : '';
+                    const priceMin = filters.value.priceMin ? filters.value.priceMin : '';
+                    const priceMax = filters.value.priceMax ? filters.value.priceMax : '';
+                    if (filters.value.name == '' && filters.value.specifications == '' && productTypeIds == '' && supplierIds == '' && priceMin == '' && priceMax == '') {
+                        // invalid search criteria
+                        isSearchActive.value = false;  // Reset search state
+                        loadProducts();
+                        return;
+                    }
+                    // const priceRange = filters.value.priceMin && filters.value.priceMax ? `${filters.value.priceMin},${filters.value.priceMax}` : '';
+                    const url = `/api/products/findItems?page=${currentPage.value}&size=${pageSize}` +
+                        `&productTypeIds=${productTypeIds}&supplierIds=${supplierIds}` +
+                        `&name=${filters.value.name}&specifications=${filters.value.specifications}` +
+                        `&priceMin=${priceMin}` +
+                        `&priceMax=${priceMax}`;
+
+                    axios.get(url)
+                        .then(response => {
+                            products.value = response.data.content;
+                            totalPages.value = response.data.totalPages;
+                            if (currentPage.value != 0 && !(currentPage.value in visiblePages.value) && totalPages.value >= 1) {
+                                currentPage.value = 0;
+                                changePage(currentPage.value);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error searching products:', error);
+                        });
+                };
+
+                return {
+                    products,
+                    productTypes,
+                    suppliers,
+                    filters,
+                    product,
+                    currentPage,
+                    totalPages,
+                    isEdit,
+                    saveProduct,
+                    deleteProduct,
+                    openModal,
+                    closeModal,
+                    uploadImage,
+                    getProductTypeName,
+                    getSupplierName,
+                    searchProducts,
+                    changePage,
+                    visiblePages,
+                    showMorePages,
+                    showNextPageGroup,
+                    resetForm
+                };
+            }
+        }).mount('#app');
+    </script>
 </body>
+
 </html>
