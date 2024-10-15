@@ -16,7 +16,7 @@
     <button class="btn btn-primary my-3" @click="openModal(null)">Add Product</button>
 
     <!-- Search Form -->
-    <div class="row mb-4">
+    <div class="row mb-4 my-3">
         <!-- Search by Name -->
         <div class="col-md-2">
             <input type="text" class="form-control" v-model="filters.name" placeholder="Search by Name">
@@ -39,10 +39,10 @@
         </div>
 
         <!-- Search by Price Range -->
-        <div class="col-md-2">
+        <div class="col-md-1">
             <input type="number" class="form-control" v-model="filters.priceMin" placeholder="Min Price">
         </div>
-        <div class="col-md-2">
+        <div class="col-md-1">
             <input type="number" class="form-control" v-model="filters.priceMax" placeholder="Max Price">
         </div>
 
@@ -52,7 +52,7 @@
         </div>
 
         <!-- Search Button -->
-        <div class="col-md-12 mt-3">
+        <div class="col-md-2">
             <button class="btn btn-primary" @click="searchProducts">Search</button>
         </div>
     </div>
