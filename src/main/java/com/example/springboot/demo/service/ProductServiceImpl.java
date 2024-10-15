@@ -34,8 +34,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<Product> findItemsByPage(Set<Long> productTypeIds, Set<Long> supplierIds, String name, String specifications, String description, Pageable pageable) {
-        return productRepository.findByFilters(productTypeIds, supplierIds, name, specifications, description, pageable);
+    public Page<Product> findItemsByPage(Set<Long> productTypeIds, Set<Long> supplierIds, String name, String specifications, Double priceMin, Double priceMax, Pageable pageable) {
+        return productRepository.findByFilters(productTypeIds, supplierIds, name, specifications, priceMin, priceMax, pageable);
     }
 
     @Override

@@ -15,6 +15,48 @@
     <!-- Add Product Button -->
     <button class="btn btn-primary my-3" @click="openModal(null)">Add Product</button>
 
+    <!-- Search Form -->
+    <div class="row mb-4">
+        <!-- Search by Name -->
+        <div class="col-md-2">
+            <input type="text" class="form-control" v-model="filters.name" placeholder="Search by Name">
+        </div>
+
+        <!-- Search by Product Type -->
+        <div class="col-md-2">
+            <select class="form-select" v-model="filters.productTypeId">
+                <option value="">All Types</option>
+                <option v-for="type in productTypes" :value="type.id">{{ type.name }}</option>
+            </select>
+        </div>
+
+        <!-- Search by Supplier -->
+        <div class="col-md-2">
+            <select class="form-select" v-model="filters.supplierId">
+                <option value="">All Suppliers</option>
+                <option v-for="supplier in suppliers" :value="supplier.id">{{ supplier.name }}</option>
+            </select>
+        </div>
+
+        <!-- Search by Price Range -->
+        <div class="col-md-2">
+            <input type="number" class="form-control" v-model="filters.priceMin" placeholder="Min Price">
+        </div>
+        <div class="col-md-2">
+            <input type="number" class="form-control" v-model="filters.priceMax" placeholder="Max Price">
+        </div>
+
+        <!-- Search by Specifications -->
+        <div class="col-md-2">
+            <input type="text" class="form-control" v-model="filters.specifications" placeholder="Search by Specifications">
+        </div>
+
+        <!-- Search Button -->
+        <div class="col-md-12 mt-3">
+            <button class="btn btn-primary" @click="searchProducts">Search</button>
+        </div>
+    </div>
+
     <!-- Products Table with Pagination -->
     <h3>Product List</h3>
     <table class="table table-bordered mt-3">
@@ -147,6 +189,14 @@
                 specifications: '',
                 detailsUrl: '',
                 description: ''
+            });
+            const filters = ref({
+                name: '',
+                productTypeId: '',
+                supplierId: '',
+                priceMin: '',
+                priceMax: '',
+                specifications: ''
             });
             const currentPage = ref(0); // Start from 0
             const pageSize = 10;
@@ -293,10 +343,34 @@
                 }
             };
 
+            // Search Products API Call
+            const searchProducts = () => {
+                const productTypeIds = filters.value.productTypeId ? filters.value.productTypeId : '';
+                const supplierIds = filters.value.supplierId ? filters.value.supplierId : '';
+                const priceMin = filters.value.priceMin ? filters.value.priceMin : '';
+                const priceMax = filters.value.priceMax ? filters.value.priceMax : '';
+                // const priceRange = filters.value.priceMin && filters.value.priceMax ? `${filters.value.priceMin},${filters.value.priceMax}` : '';
+                const url = `/api/products/findProducts?page=${currentPage.value}&size=${pageSize}` +
+                            `&productTypeIds=${productTypeIds}&supplierIds=${supplierIds}` +
+                            `&name=${filters.value.name}&specifications=${filters.value.specifications}` +
+                            `&priceMin=${priceMin}` +
+                            `&priceMax=${priceMax}`;
+
+                axios.get(url)
+                    .then(response => {
+                        products.value = response.data.content;
+                        totalPages.value = response.data.totalPages;
+                    })
+                    .catch(error => {
+                        console.error('Error searching products:', error);
+                    });
+            };
+
             return {
                 products,
                 productTypes,
                 suppliers,
+                filters,
                 product,
                 currentPage,
                 totalPages,
@@ -308,6 +382,7 @@
                 uploadImage,
                 getProductTypeName,
                 getSupplierName,
+                searchProducts,
                 changePage,
                 resetForm
             };

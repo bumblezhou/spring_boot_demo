@@ -54,7 +54,7 @@ public class ProductController {
     }
 
     /*
-     * Example: http://localhost:8080/api/products/findProducts?page=0&size=10&sortBy=id&productIds=1,2,3&supplierIds=4,5,6&name=ProductName&specifications=Specs&description=Description
+     * Example: http://localhost:8080/api/products/findProducts?page=0&size=10&sortBy=id&productIds=1,2,3&supplierIds=4,5,6&name=ProductName&specifications=Specs&priceMin=1&priceMax=10
      *
      * @RequestParam(defaultValue = "0") int page,
      * @RequestParam(defaultValue = "10") int size,
@@ -63,7 +63,8 @@ public class ProductController {
      * @RequestParam(required = false) String supplierIds,
      * @RequestParam(required = false) String name,
      * @RequestParam(required = false) String specifications,
-     * @RequestParam(required = false) String description
+     * @RequestParam(required = false) String priceMin,
+     * @RequestParam(required = false) String priceMax
     */
     @GetMapping("/api/products/findProducts")
     public ResponseEntity<Page<Product>> findProducts(
@@ -74,7 +75,8 @@ public class ProductController {
         @RequestParam(required = false) String supplierIds,
         @RequestParam(required = false) String name,
         @RequestParam(required = false) String specifications,
-        @RequestParam(required = false) String description
+        @RequestParam(required = false) String priceMin,
+        @RequestParam(required = false) String priceMax
     ) {
         // Handle null or empty values for productIds and supplierIds
         Set<Long> productIdSet = null;
@@ -95,8 +97,16 @@ public class ProductController {
                 supplierIdSet.add(Long.parseLong(supplierIdsArray[i]));
             }
         }
+
+        Double priceMaxValue = 0.0;
+        Double priceMinValue = 0.0;
+        if (priceMax != null && !priceMax.isEmpty()) {
+            priceMaxValue = Double.parseDouble(priceMax);
+            priceMinValue = Double.parseDouble(priceMin);
+        }
+
         PageRequest pageable = PageRequest.of(page, size, Sort.by(sortBy));
-        Page<Product> products = productService.findItemsByPage(productIdSet, supplierIdSet, name, specifications, description, pageable);
+        Page<Product> products = productService.findItemsByPage(productIdSet, supplierIdSet, name, specifications, priceMinValue, priceMaxValue, pageable);
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
  

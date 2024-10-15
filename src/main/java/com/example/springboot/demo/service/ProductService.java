@@ -18,7 +18,7 @@ public interface ProductService {
 	// Search operation
 	Page<Product> fetchItemsByPage(Pageable pageable);
 
-	Page<Product> findItemsByPage(Set<Long> productTypeIds, Set<Long> supplierIds, String name, String specifications, String description, Pageable pageable);
+	Page<Product> findItemsByPage(Set<Long> productTypeIds, Set<Long> supplierIds, String name, String specifications, Double priceMin, Double priceMax, Pageable pageable);
 
 	// Update operation
 	Product update(Product product, Long Id);

@@ -15,16 +15,18 @@ import com.example.springboot.demo.model.Product;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT new com.example.springboot.demo.model.Product(P.id, P.productTypeId, P.supplierId, P.name, P.price, P.imageUrl, P.specifications, P.detailsUrl, P.description) FROM Product P WHERE " +
-        "(:#{#productTypeIds == null} = true or (P.productTypeId in (:productTypeIds))) OR" +
-        "(:#{#supplierIds == null} = true or (P.supplierId in (:supplierIds))) OR" +
-        "(P.name LIKE %:name%) OR " +
-        "(P.specifications LIKE %:specifications%) OR " +
-        "(P.description LIKE %:description%)")
+        "(:#{#productTypeIds == null} = true or (P.productTypeId in (:productTypeIds))) AND" +
+        "(:#{#supplierIds == null} = true or (P.supplierId in (:supplierIds))) AND" +
+        "(:#{#name == null} = true or P.name LIKE %:name%) AND " +
+        "(:#{#specifications == null} = true or P.specifications LIKE %:specifications%) AND " +
+        "(:#{#priceMin == 0.0} = true or (P.price >= (:priceMin))) AND" +
+        "(:#{#priceMax == 0.0} = true or (P.price <= (:priceMax)))")
   Page<Product> findByFilters(
     @Param("productTypeIds") Set<Long> productTypeIds,
     @Param("supplierIds") Set<Long> supplierIds,
     @Param("name") String name, 
     @Param("specifications") String specifications, 
-    @Param("description") String description, 
+    @Param("priceMin") Double priceMin, 
+    @Param("priceMax") Double priceMax, 
     Pageable pageable);
 }
