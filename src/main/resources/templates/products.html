@@ -89,17 +89,27 @@
     </table>
 
     <!-- Pagination Controls -->
-    <nav>
-        <ul class="pagination">
-            <li class="page-item" :class="{ disabled: currentPage === 0 }">
-                <a class="page-link" href="#" @click.prevent="changePage(currentPage - 1)">Previous</a>
-            </li>
-            <li class="page-item" v-for="page in totalPages" :key="page" :class="{ active: currentPage === page - 1 }">
-                <a class="page-link" href="#" @click.prevent="changePage(page - 1)">{{ page }}</a>
-            </li>
-            <li class="page-item" :class="{ disabled: currentPage === totalPages - 1 }">
-                <a class="page-link" href="#" @click.prevent="changePage(currentPage + 1)">Next</a>
-            </li>
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+        <!-- Previous Button -->
+        <li :class="['page-item', { disabled: currentPage === 0 }]">
+            <a class="page-link" href="#" @click.prevent="changePage(currentPage - 1)">Previous</a>
+        </li>
+    
+        <!-- Page Numbers -->
+        <li v-for="page in visiblePages" :key="page" :class="['page-item', { active: currentPage === page - 1 }]">
+            <a class="page-link" href="#" @click.prevent="changePage(page - 1)">{{ page }}</a>
+        </li>
+    
+        <!-- "..." for More Pages -->
+        <li v-if="showMorePages" class="page-item">
+            <a class="page-link" href="#" @click.prevent="showNextPageGroup()">...</a>
+        </li>
+    
+        <!-- Next Button -->
+        <li :class="['page-item', { disabled: currentPage === totalPages - 1 }]">
+            <a class="page-link" href="#" @click.prevent="changePage(currentPage + 1)">Next</a>
+        </li>
         </ul>
     </nav>
 
@@ -202,8 +212,11 @@
                 specifications: ''
             });
             const currentPage = ref(0); // Start from 0
-            const pageSize = 10;
+            const pageSize = 2;
             const totalPages = ref(0);
+            const maxVisiblePages = 5;  // Maximum visible pages at a time
+            const pageGroupStart = ref(1);  // Tracks the first page in the current group
+            const isSearchActive = ref(false);  // Tracks whether a search is active
             const totalProducts = ref(0);
             const isEdit = ref(false);
 
@@ -215,6 +228,7 @@
             });
 
             const loadProducts = () => {
+                isSearchActive.value = false;  // Reset search state
                 axios.get(`/api/products/fetchItemsByPage?page=${currentPage.value}&size=${pageSize}`)
                     .then(response => {
                         products.value = response.data.content;
@@ -342,16 +356,64 @@
             const changePage = (page) => {
                 if (page >= 0 && page < totalPages.value) {
                     currentPage.value = page;
-                    loadProducts();
+                    
+                    // Adjust pageGroupStart if we move out of current page group
+                    if (page < pageGroupStart.value - 1) {
+                        // Moving to a previous group, reset to 1-5
+                        pageGroupStart.value = 1;
+                    } else if (page >= pageGroupStart.value + maxVisiblePages - 1) {
+                        // Moving to next group, update start of page group
+                        pageGroupStart.value = pageGroupStart.value + maxVisiblePages;
+                    }
+
+                    // Load next page of either search results or normal products
+                    if (isSearchActive.value) {
+                        searchProducts();
+                    } else {
+                        loadProducts();
+                    }
+                }
+            };
+
+            // Determine visible pages (up to 5 at a time)
+            const visiblePages = computed(() => {
+                const pages = [];
+                const endPage = Math.min(pageGroupStart.value + maxVisiblePages - 1, totalPages.value);
+                for (let i = pageGroupStart.value; i <= endPage; i++) {
+                    pages.push(i);
+                }
+                return pages;
+            });
+
+            // Determine if "..." should be shown for more pages
+            const showMorePages = computed(() => {
+                return totalPages.value > pageGroupStart.value + maxVisiblePages - 1;
+            });
+
+            // Load next group of pages when clicking "..."
+            const showNextPageGroup = () => {
+                pageGroupStart.value += maxVisiblePages;
+                const firstPageOfNextGroup = pageGroupStart.value - 1; // First page of the next group
+
+                if (firstPageOfNextGroup < totalPages.value) {
+                    currentPage.value = firstPageOfNextGroup; // Navigate to the first page of the new group
+                    changePage(firstPageOfNextGroup);
                 }
             };
 
             // Search Products API Call
             const searchProducts = () => {
+                isSearchActive.value = true;  // Mark that search is active
                 const productTypeIds = filters.value.productTypeId ? filters.value.productTypeId : '';
                 const supplierIds = filters.value.supplierId ? filters.value.supplierId : '';
                 const priceMin = filters.value.priceMin ? filters.value.priceMin : '';
                 const priceMax = filters.value.priceMax ? filters.value.priceMax : '';
+                if(filters.value.name == '' && filters.value.specifications == '' && productTypeIds == '' && supplierIds == '' && priceMin == '' && priceMax == '') {
+                    // invalid search criteria
+                    isSearchActive.value = false;  // Reset search state
+                    loadProducts();
+                    return;
+                }
                 // const priceRange = filters.value.priceMin && filters.value.priceMax ? `${filters.value.priceMin},${filters.value.priceMax}` : '';
                 const url = `/api/products/findItems?page=${currentPage.value}&size=${pageSize}` +
                             `&productTypeIds=${productTypeIds}&supplierIds=${supplierIds}` +
@@ -363,6 +425,10 @@
                     .then(response => {
                         products.value = response.data.content;
                         totalPages.value = response.data.totalPages;
+                        if (currentPage.value != 0 && !(currentPage.value in visiblePages.value) && totalPages.value >= 1) {
+                            currentPage.value = 0;
+                            changePage(currentPage.value);
+                        }
                     })
                     .catch(error => {
                         console.error('Error searching products:', error);
@@ -387,6 +453,9 @@
                 getSupplierName,
                 searchProducts,
                 changePage,
+                visiblePages,
+                showMorePages,
+                showNextPageGroup,
                 resetForm
             };
         }
