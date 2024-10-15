@@ -54,12 +54,12 @@ public class ProductController {
     }
 
     /*
-     * Example: http://localhost:8080/api/products/findProducts?page=0&size=10&sortBy=id&productIds=1,2,3&supplierIds=4,5,6&name=ProductName&specifications=Specs&priceMin=1&priceMax=10
+     * Example: http://localhost:8080/api/products/findProducts?page=0&size=10&sortBy=id&productTypeIds=1,2,3&supplierIds=4,5,6&name=ProductName&specifications=Specs&priceMin=1&priceMax=10
      *
      * @RequestParam(defaultValue = "0") int page,
      * @RequestParam(defaultValue = "10") int size,
      * @RequestParam(defaultValue = "id") String sortBy,
-     * @RequestParam(required = false) String productIds,
+     * @RequestParam(required = false) String productTypeIds,
      * @RequestParam(required = false) String supplierIds,
      * @RequestParam(required = false) String name,
      * @RequestParam(required = false) String specifications,
@@ -71,22 +71,22 @@ public class ProductController {
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size,
         @RequestParam(defaultValue = "id") String sortBy,
-        @RequestParam(required = false) String productIds,
+        @RequestParam(required = false) String productTypeIds,
         @RequestParam(required = false) String supplierIds,
         @RequestParam(required = false) String name,
         @RequestParam(required = false) String specifications,
         @RequestParam(required = false) String priceMin,
         @RequestParam(required = false) String priceMax
     ) {
-        // Handle null or empty values for productIds and supplierIds
-        Set<Long> productIdSet = null;
+        // Handle null or empty values for productTypeIds and supplierIds
+        Set<Long> productTypeIdSet = null;
         Set<Long> supplierIdSet = null;
 
-        if (productIds != null && !productIds.isEmpty()) {
-            String[] productIdsArray = productIds.split(",");
-            productIdSet = new HashSet<Long>(productIdsArray.length);
-            for (int i = 0; i < productIdsArray.length; i++) {
-                productIdSet.add(Long.parseLong(productIdsArray[i]));
+        if (productTypeIds != null && !productTypeIds.isEmpty()) {
+            String[] productTypeIdsArray = productTypeIds.split(",");
+            productTypeIdSet = new HashSet<Long>(productTypeIdsArray.length);
+            for (int i = 0; i < productTypeIdsArray.length; i++) {
+                productTypeIdSet.add(Long.parseLong(productTypeIdsArray[i]));
             }
         }
 
@@ -106,7 +106,7 @@ public class ProductController {
         }
 
         PageRequest pageable = PageRequest.of(page, size, Sort.by(sortBy));
-        Page<Product> products = productService.findItemsByPage(productIdSet, supplierIdSet, name, specifications, priceMinValue, priceMaxValue, pageable);
+        Page<Product> products = productService.findItemsByPage(productTypeIdSet, supplierIdSet, name, specifications, priceMinValue, priceMaxValue, pageable);
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
  

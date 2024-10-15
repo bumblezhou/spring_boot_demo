@@ -136,47 +136,48 @@ function search_department(currentPageIndex){
                 isRunningCell.textContent = department.isRunning; // Set the text content of the cell
                 const operateCell = row.insertCell(6); // Insert a cell for Operating
 
-                // Create the anchor (a) element
-                const add_anchor = document.createElement('a');
-                // Set the href attribute (it can be a URL or '#' for no navigation)
-                add_anchor.href = '#';
-                // Set the text content of the anchor
-                add_anchor.textContent = 'Add';
-                // Add an ID (optional, if you want to reference it later)
-                add_anchor.id = 'add_link_' + department.id;
-                // Bind the click event handler
-                add_anchor.addEventListener('click', function(event) {
-                    event.preventDefault();  // Prevent default action (navigation)
-                    // Select the modal element
-                    document.getElementById('edit_id').value = 0;
-                    let current_department = getRowData(this.id);
-                    // document.getElementById('edit_id').value = current_department.id;
-                    document.getElementById('edit_name').value = current_department.name;
-                    document.getElementById('edit_address').value = current_department.address;
-                    document.getElementById('edit_code').value = current_department.code;
-                    document.getElementById('edit_members').value = current_department.members;
-                    document.getElementById('edit_isrunning').checked = current_department.isRunning;
-                    document.getElementById('btn_save_department').setAttribute('onclick', 'add_department_req(' + current_department.id + '); return false;');
-                    document.getElementById('myModalLabel').textContent = 'Add Department';
-                    edit_modal.show();
-                });
-                // Append the anchor tag to the div with ID "link-container"
-                operateCell.appendChild(add_anchor);
+                // // Create the anchor (a) element
+                // const add_anchor = document.createElement('a');
+                // // Set the href attribute (it can be a URL or '#' for no navigation)
+                // add_anchor.href = '#';
+                // // Set the text content of the anchor
+                // add_anchor.textContent = 'Add';
+                // // Add an ID (optional, if you want to reference it later)
+                // add_anchor.id = 'add_link_' + department.id;
+                // // Bind the click event handler
+                // add_anchor.addEventListener('click', function(event) {
+                //     event.preventDefault();  // Prevent default action (navigation)
+                //     // Select the modal element
+                //     document.getElementById('edit_id').value = 0;
+                //     let current_department = getRowData(this.id);
+                //     // document.getElementById('edit_id').value = current_department.id;
+                //     document.getElementById('edit_name').value = current_department.name;
+                //     document.getElementById('edit_address').value = current_department.address;
+                //     document.getElementById('edit_code').value = current_department.code;
+                //     document.getElementById('edit_members').value = current_department.members;
+                //     document.getElementById('edit_isrunning').checked = current_department.isRunning;
+                //     document.getElementById('btn_save_department').setAttribute('onclick', 'add_department_req(' + current_department.id + '); return false;');
+                //     document.getElementById('myModalLabel').textContent = 'Add Department';
+                //     edit_modal.show();
+                // });
+                // // Append the anchor tag to the div with ID "link-container"
+                // operateCell.appendChild(add_anchor);
 
-                const span1 = document.createElement('span');
-                span1.textContent = ' | ';
-                operateCell.appendChild(span1);
+                // const span1 = document.createElement('span');
+                // span1.textContent = ' | ';
+                // operateCell.appendChild(span1);
 
-                // Create the anchor (a) element
-                const edit_anchor = document.createElement('a');
+                // Create the anchor (button) element
+                const edit_button = document.createElement('button');
                 // Set the href attribute (it can be a URL or '#' for no navigation)
-                edit_anchor.href = '#';
+                // edit_button.href = '#';
+                edit_button.className = 'btn btn-sm btn-warning';
                 // Set the text content of the anchor
-                edit_anchor.textContent = 'Edit';
+                edit_button.textContent = 'Edit';
                 // Add an ID (optional, if you want to reference it later)
-                edit_anchor.id = 'edit_link_' + department.id;
+                edit_button.id = 'edit_link_' + department.id;
                 // Bind the click event handler
-                edit_anchor.addEventListener('click', function(event) {
+                edit_button.addEventListener('click', function(event) {
                     event.preventDefault();  // Prevent default action (navigation)
                     // Select the modal element
                     let current_department = getRowData(this.id);
@@ -191,27 +192,28 @@ function search_department(currentPageIndex){
                     edit_modal.show();
                 });
                 // Append the anchor tag to the div with ID "link-container"
-                operateCell.appendChild(edit_anchor);
+                operateCell.appendChild(edit_button);
 
                 const span2 = document.createElement('span');
-                span2.textContent = ' | ';
+                span2.textContent = ' ';
                 operateCell.appendChild(span2);
                 
                 // Create the anchor (a) element
-                const delete_anchor = document.createElement('a');
+                const delete_button = document.createElement('a');
                 // Set the href attribute (it can be a URL or '#' for no navigation)
-                delete_anchor.href = '#';
+                // delete_button.href = '#';
+                delete_button.className = 'btn btn-sm btn-danger';
                 // Set the text content of the anchor
-                delete_anchor.textContent = 'Delete';
+                delete_button.textContent = 'Delete';
                 // Add an ID (optional, if you want to reference it later)
-                delete_anchor.id = 'delete_link_' + department.id;
+                delete_button.id = 'delete_link_' + department.id;
                 // Bind the click event handler
-                delete_anchor.addEventListener('click', function(event) {
+                delete_button.addEventListener('click', function(event) {
                     event.preventDefault();  // Prevent default action (navigation)
                     delete_department_req(department.id);
                 });
                 // Append the anchor tag to the div with ID "link-container"
-                operateCell.appendChild(delete_anchor);
+                operateCell.appendChild(delete_button);
             });
 
             display_pagination(data);
@@ -266,47 +268,52 @@ function load_departments(currentPageIndex) {
                 isRunningCell.textContent = department.isRunning; // Set the text content of the cell
                 const operateCell = row.insertCell(6); // Insert a cell for Operating
 
-                // Create the anchor (a) element
-                const add_anchor = document.createElement('a');
-                // Set the href attribute (it can be a URL or '#' for no navigation)
-                add_anchor.href = '#';
-                // Set the text content of the anchor
-                add_anchor.textContent = 'Add';
-                // Add an ID (optional, if you want to reference it later)
-                add_anchor.id = 'add_link_' + department.id;
-                // Bind the click event handler
-                add_anchor.addEventListener('click', function(event) {
-                    event.preventDefault();  // Prevent default action (navigation)
-                    // Select the modal element
-                    document.getElementById('edit_id').value = 0;
-                    let current_department = getRowData(this.id);
-                    // document.getElementById('edit_id').value = current_department.id;
-                    document.getElementById('edit_name').value = current_department.name;
-                    document.getElementById('edit_address').value = current_department.address;
-                    document.getElementById('edit_code').value = current_department.code;
-                    document.getElementById('edit_members').value = current_department.members;
-                    document.getElementById('edit_isrunning').checked = current_department.isRunning;
-                    document.getElementById('btn_save_department').setAttribute('onclick', 'add_department_req(' + current_department.id + '); return false;');
-                    document.getElementById('myModalLabel').textContent = 'Add Department';
-                    edit_modal.show();
-                });
-                // Append the anchor tag to the div with ID "link-container"
-                operateCell.appendChild(add_anchor);
+                // // Create the anchor (a) element
+                // const add_anchor = document.createElement('a');
+                // // Set the href attribute (it can be a URL or '#' for no navigation)
+                // add_anchor.href = '#';
+                // // Set the text content of the anchor
+                // add_anchor.textContent = 'Add';
+                // // Add an ID (optional, if you want to reference it later)
+                // add_anchor.id = 'add_link_' + department.id;
+                // // Bind the click event handler
+                // add_anchor.addEventListener('click', function(event) {
+                //     event.preventDefault();  // Prevent default action (navigation)
+                //     // Select the modal element
+                //     document.getElementById('edit_id').value = 0;
+                //     let current_department = getRowData(this.id);
+                //     // document.getElementById('edit_id').value = current_department.id;
+                //     document.getElementById('edit_name').value = current_department.name;
+                //     document.getElementById('edit_address').value = current_department.address;
+                //     document.getElementById('edit_code').value = current_department.code;
+                //     document.getElementById('edit_members').value = current_department.members;
+                //     document.getElementById('edit_isrunning').checked = current_department.isRunning;
+                //     document.getElementById('btn_save_department').setAttribute('onclick', 'add_department_req(' + current_department.id + '); return false;');
+                //     document.getElementById('myModalLabel').textContent = 'Add Department';
+                //     edit_modal.show();
+                // });
+                // // Append the anchor tag to the div with ID "link-container"
+                // operateCell.appendChild(add_anchor);
 
-                const span1 = document.createElement('span');
-                span1.textContent = ' | ';
-                operateCell.appendChild(span1);
+                // const span1 = document.createElement('span');
+                // span1.textContent = ' | ';
+                // operateCell.appendChild(span1);
 
-                // Create the anchor (a) element
-                const edit_anchor = document.createElement('a');
+                // <button class="btn btn-sm btn-warning" @click="openModal(product)">Edit</button>
+                // &nbsp;
+                // <button class="btn btn-sm btn-danger" @click="deleteProduct(product.id)">Delete</button>
+
+                // Create the anchor (button) element
+                const edit_button = document.createElement('button');
                 // Set the href attribute (it can be a URL or '#' for no navigation)
-                edit_anchor.href = '#';
+                // edit_button.href = '#';
+                edit_button.className = 'btn btn-sm btn-warning';
                 // Set the text content of the anchor
-                edit_anchor.textContent = 'Edit';
+                edit_button.textContent = 'Edit';
                 // Add an ID (optional, if you want to reference it later)
-                edit_anchor.id = 'edit_link_' + department.id;
+                edit_button.id = 'edit_link_' + department.id;
                 // Bind the click event handler
-                edit_anchor.addEventListener('click', function(event) {
+                edit_button.addEventListener('click', function(event) {
                     event.preventDefault();  // Prevent default action (navigation)
                     // Select the modal element
                     let current_department = getRowData(this.id);
@@ -321,27 +328,28 @@ function load_departments(currentPageIndex) {
                     edit_modal.show();
                 });
                 // Append the anchor tag to the div with ID "link-container"
-                operateCell.appendChild(edit_anchor);
+                operateCell.appendChild(edit_button);
 
                 const span2 = document.createElement('span');
-                span2.textContent = ' | ';
+                span2.textContent = ' ';
                 operateCell.appendChild(span2);
                 
-                // Create the anchor (a) element
-                const delete_anchor = document.createElement('a');
+                // Create the anchor (button) element
+                const delete_button = document.createElement('button');
                 // Set the href attribute (it can be a URL or '#' for no navigation)
-                delete_anchor.href = '#';
+                // delete_button.href = '#';
+                delete_button.className = 'btn btn-sm btn-danger';
                 // Set the text content of the anchor
-                delete_anchor.textContent = 'Delete';
+                delete_button.textContent = 'Delete';
                 // Add an ID (optional, if you want to reference it later)
-                delete_anchor.id = 'delete_link_' + department.id;
+                delete_button.id = 'delete_link_' + department.id;
                 // Bind the click event handler
-                delete_anchor.addEventListener('click', function(event) {
+                delete_button.addEventListener('click', function(event) {
                     event.preventDefault();  // Prevent default action (navigation)
                     delete_department_req(department.id);
                 });
                 // Append the anchor tag to the div with ID "link-container"
-                operateCell.appendChild(delete_anchor);
+                operateCell.appendChild(delete_button);
             });
 
             display_pagination(data);
