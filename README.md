@@ -1,8 +1,9 @@
 # A simple project to study how to use spring boot and vue.js to achieve the following basic features:
     * data CRUD (spring boot JPA)
     * Displaying data in a html table using bootstrap styles (html, bootstrap)
-    * search data by its fields(primitive js/vue.js)
-    * pagination(primitive js/vue.js)
+    * search data by its fields(pure js/vue.js)
+    * pagination(pure js/vue.js)
+    * treeview CRUD(vue.js)
 
 ## prepare:
     1. Download OpenJDK and install it.
