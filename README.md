@@ -41,3 +41,11 @@
 
 ## how to deploy:
     java -jar .\build\libs\springboot.demo-0.0.1-SNAPSHOT.war
+
+## screenshots:
+1. Department Management
+![Department Management](./screenshots/1.jpg "Department Management")
+2. Product Management
+![Product Management](./screenshots/2.jpg "Product Management")
+2. Organization Management
+![Organization Management](./screenshots/3.jpg "Organization Management")
