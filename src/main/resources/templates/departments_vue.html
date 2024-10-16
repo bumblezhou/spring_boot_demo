@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Departmetns</title>
+    <meta charset="UTF-8">
+    <th:block th:replace="~{fragments/bootstrap_ref :: bootstrap_css_js}" />
+    <th:block th:replace="~{fragments/vuejs_ref :: vue_axios_js}" />
+</head>
+
+<body>
+    <div th:replace="~{fragments/navigation :: navigation}"></div>
+    <div id="app" class="container mt-5">
+        <h2>Product Management</h2>
+
+        <!-- Add Product Button -->
+        <button class="btn btn-primary my-3" @click="openModal(null)">Add Department</button>
+
+        <!-- Search Form -->
+        <div class="row mb-4 my-3">
+            <div class="col-sm-2">
+                <input type="text" id="txt_search_name" placeholder="Search by Name" value="财务部" v-model="filters.name" class="form-control col-sm-3" />
+            </div>
+            <div class="col-sm-2">
+                <input type="text" id="txt_search_addr" placeholder="Search by Address" value="17区" v-model="filters.address" class="form-control col-sm-3" />
+            </div>
+            <div class="col-sm-2">
+                <input type="text" id="txt_search_code" placeholder="Search by Code" value="" v-model="filters.code" class="form-control col-sm-3" />
+            </div>
+            <div class="col-sm-2">
+                <input type="number" id="txt_search_min_members" placeholder="Min merbers" value="" v-model="filters.membersMin" class="form-control col-sm-3" />
+            </div>
+            <div class="col-sm-2">
+                <input type="number" id="txt_search_max_members" placeholder="Max members" value="" v-model="filters.membersMax" class="form-control col-sm-3" />
+            </div>
+            <div class="col-sm-1">
+                <button class="btn btn-primary" @click="searchDepartments">Search</button>
+            </div>
+        </div>
+
+        <h3>Department List</h3>
+        <table id="table_departments" class="table table-striped table-bordered mt-3">
+            <thead>
+                <th scope="col">Id</th>
+                <th scope="col">Name</th>
+                <th scope="col">Address</th>
+                <th scope="col">Code</th>
+                <th scope="col">Members</th>
+                <th scope="col">Is running?</th>
+                <th scope="col" style="width: 140px;">Actions</th>
+            </thead>
+            <tbody>
+                <tr v-for="department in departments" :key="department.id">
+                    <td>{{ department.id }}</td>
+                    <td>{{ department.name }}</td>
+                    <td>{{ department.address }}</td>
+                    <td>{{ department.code }}</td>
+                    <td>{{ department.members }}</td>
+                    <td><input type="checkbox" v-model="department.isRunning" disabled> <span>{{ department.isRunning ? 'Yes' : 'No' }}</span> </td>
+                    <td>
+                        <button class="btn btn-sm btn-warning" @click="openModal(department)">Edit</button>
+                        <span>&nbsp;</span>
+                        <button class="btn btn-sm btn-danger" @click="deleteDepartment(department.id)">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Pagination Controls -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <!-- Previous Button -->
+                <li :class="['page-item', { disabled: currentPage === 0 }]">
+                    <a class="page-link" href="#" @click.prevent="changePage(currentPage - 1)">Previous</a>
+                </li>
+
+                <!-- Page Numbers -->
+                <li v-for="page in visiblePages" :key="page"
+                    :class="['page-item', { active: currentPage === page - 1 }]">
+                    <a class="page-link" href="#" @click.prevent="changePage(page - 1)">{{ page }}</a>
+                </li>
+
+                <!-- "..." for More Pages -->
+                <li v-if="showMorePages" class="page-item">
+                    <a class="page-link" href="#" @click.prevent="showNextPageGroup()">...</a>
+                </li>
+
+                <!-- Next Button -->
+                <li :class="['page-item', { disabled: currentPage === totalPages - 1 }]">
+                    <a class="page-link" href="#" @click.prevent="changePage(currentPage + 1)">Next</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Department Modal (Add/Edit) -->
+        <div class="modal fade" id="departmentModal" tabindex="-1" aria-labelledby="departmentModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form @submit.prevent="saveDepartment" enctype="multipart/form-data">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="departmentModalLabel">{{ isEdit ? 'Edit' : 'Add' }} Department</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" v-model="department.id">
+                        <p class="mb-0">
+                            <div class="form-group row">
+                                <label for="departmentName" class="col-sm-3 col-form-label">Name</label>
+                                <div class="col-sm-9">
+                                    <input id="departmentName" type="text" class="form-control" v-model="department.name" required />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="departmentAddress" class="col-sm-3 col-form-label">Address</label>
+                                <div class="col-sm-9">
+                                    <input id="departmentAddress" type="text" class="form-control" v-model="department.address" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="departmentCode" class="col-sm-3 col-form-label">Code</label>
+                                <div class="col-sm-9">
+                                    <input id="departmentCode" type="text" class="form-control" v-model="department.code" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="departmentMembers" class="col-sm-3 col-form-label">Members</label>
+                                <div class="col-sm-9">
+                                    <input id="departmentMembers" type="number" class="form-control" v-model="department.members" min="0" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="departmentIsRunning" class="col-sm-3 col-form-label">Is Running?</label>
+                                <div class="col-sm-9">
+                                    <input id="departmentIsRunning" type="checkbox" class="form-check-input" v-model="department.isRunning" />
+                                </div>
+                            </div>
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">{{ isEdit ? 'Update' : 'Add' }} Department</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { createApp, ref, computed, onMounted } = Vue;
+
+        createApp({
+            setup() {
+                const departments = ref([]);
+                const department = ref({
+                    id: null,
+                    name: '',
+                    address: '',
+                    code: '',
+                    members: '',
+                    isRunning: ''
+                });
+                const filters = ref({
+                    name: '',
+                    address: '',
+                    code: '',
+                    membersMin: '',
+                    membersMax: '',
+                    isRunning: ''
+                });
+                const currentPage = ref(0); // Start from 0
+                const pageSize = 10;
+                const totalPages = ref(0);
+                const maxVisiblePages = 5;  // Maximum visible pages at a time
+                const pageGroupStart = ref(1);  // Tracks the first page in the current group
+                const isSearchActive = ref(false);  // Tracks whether a search is active
+                const totalProducts = ref(0);
+                const isEdit = ref(false);
+
+                // Load departments on mount
+                onMounted(() => {
+                    loadDepartments();
+                    // loadProductTypes();
+                    // loadSuppliers();
+                });
+
+                const loadDepartments = () => {
+                    isSearchActive.value = false;  // Reset search state
+                    axios.get(`/api/departments/fetchDepartmentsByPage?page=${currentPage.value}&size=${pageSize}`)
+                        .then(response => {
+                            departments.value = response.data.content;
+                            totalProducts.value = response.data.totalElements;
+                            totalPages.value = response.data.totalPages;
+                        })
+                        .catch(error => {
+                            console.error('Error loading departments:', error);
+                        });
+                };
+
+                const saveDepartment = () => {
+                    if (department.value.id) {
+                        axios.put(`/api/departments/${department.value.id}`, department.value)
+                            .then(() => {
+                                loadDepartments();
+                                closeModal();
+                            })
+                            .catch(error => {
+                                console.error('Error updating department:', error);
+                            });
+                    } else {
+                        axios.post('/api/departments', department.value)
+                            .then(() => {
+                                loadDepartments();
+                                closeModal();
+                            })
+                            .catch(error => {
+                                console.error('Error adding department:', error);
+                            });
+                    }
+                };
+
+                const deleteDepartment = (id) => {
+                    if (confirm('Are you sure you want to delete this department?')) {
+                        axios.delete(`/api/departments/${id}`)
+                            .then(() => {
+                                loadDepartments();
+                            })
+                            .catch(error => {
+                                console.error('Error deleting department:', error);
+                            });
+                    }
+                };
+
+                const openModal = (deprt) => {
+                    if (deprt) {
+                        department.value = { ...deprt };
+                        isEdit.value = true;
+                    } else {
+                        resetForm();
+                        isEdit.value = false;
+                    }
+                    const modal = new bootstrap.Modal(document.getElementById('departmentModal'));
+                    modal.show();
+                };
+
+                const closeModal = () => {
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('departmentModal'));
+                    modal.hide();
+                };
+
+                const resetForm = () => {
+                    department.value = {
+                        id: null,
+                        name: '',
+                        address: '',
+                        code: '',
+                        members: '',
+                        isRunning: ''
+                    };
+                };
+
+                const changePage = (page) => {
+                    if (page >= 0 && page < totalPages.value) {
+                        currentPage.value = page;
+
+                        // Adjust pageGroupStart if we move out of current page group
+                        if (page < pageGroupStart.value - 1) {
+                            // Moving to a previous group, reset to 1-5
+                            pageGroupStart.value = 1;
+                        } else if (page >= pageGroupStart.value + maxVisiblePages - 1) {
+                            // Moving to next group, update start of page group
+                            pageGroupStart.value = pageGroupStart.value + maxVisiblePages;
+                        }
+
+                        // Load next page of either search results or normal departments
+                        if (isSearchActive.value) {
+                            searchDepartments();
+                        } else {
+                            loadDepartments();
+                        }
+                    }
+                };
+
+                // Determine visible pages (up to 5 at a time)
+                const visiblePages = computed(() => {
+                    const pages = [];
+                    const endPage = Math.min(pageGroupStart.value + maxVisiblePages - 1, totalPages.value);
+                    for (let i = pageGroupStart.value; i <= endPage; i++) {
+                        pages.push(i);
+                    }
+                    return pages;
+                });
+
+                // Determine if "..." should be shown for more pages
+                const showMorePages = computed(() => {
+                    return totalPages.value > pageGroupStart.value + maxVisiblePages - 1;
+                });
+
+                // Load next group of pages when clicking "..."
+                const showNextPageGroup = () => {
+                    pageGroupStart.value += maxVisiblePages;
+                    const firstPageOfNextGroup = pageGroupStart.value - 1; // First page of the next group
+
+                    if (firstPageOfNextGroup < totalPages.value) {
+                        currentPage.value = firstPageOfNextGroup; // Navigate to the first page of the new group
+                        changePage(firstPageOfNextGroup);
+                    }
+                };
+
+                // Search Products API Call
+                const searchDepartments = () => {
+                    isSearchActive.value = true;  // Mark that search is active
+                    const membersMin = filters.value.membersMin ? filters.value.membersMin : '';
+                    const membersMax = filters.value.membersMax ? filters.value.membersMax : '';
+                    if (filters.value.name == '' && filters.value.address == '' && filters.value.code == '' && membersMin == '' && membersMax == '') {
+                        // invalid search criteria
+                        isSearchActive.value = false;  // Reset search state
+                        loadDepartments();
+                        return;
+                    }
+                    // const priceRange = filters.value.priceMin && filters.value.priceMax ? `${filters.value.priceMin},${filters.value.priceMax}` : '';
+                    const url = `/api/departments/findDepartments?page=${currentPage.value}&size=${pageSize}` +
+                        `&name=${filters.value.name}&address=${filters.value.address}&code=${filters.value.code}` +
+                        `&membersMin=${membersMin}` +
+                        `&membersMax=${membersMax}`;
+
+                    axios.get(url)
+                        .then(response => {
+                            departments.value = response.data.content;
+                            totalPages.value = response.data.totalPages;
+                            if (currentPage.value != 0 && !(currentPage.value in visiblePages.value) && totalPages.value >= 1) {
+                                currentPage.value = 0;
+                                changePage(currentPage.value);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error searching departments:', error);
+                        });
+                };
+
+                return {
+                    departments,
+                    filters,
+                    department,
+                    currentPage,
+                    totalPages,
+                    isEdit,
+                    saveDepartment,
+                    deleteDepartment,
+                    openModal,
+                    closeModal,
+                    searchDepartments,
+                    changePage,
+                    visiblePages,
+                    showMorePages,
+                    showNextPageGroup,
+                    resetForm
+                };
+            }
+        }).mount('#app');
+    </script>
+
+</body>
+
+</html>

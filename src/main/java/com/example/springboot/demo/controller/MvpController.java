@@ -20,13 +20,23 @@ public class MvpController {
     }
 
     // @Autowired private DepartmentService departmentService;
-    @GetMapping("/departments")
-    public String departments(Model model){
+    @GetMapping("/departments_js")
+    public String departments_js(Model model){
 
         // var departments = departmentService.fetchDepartmentList();
         // model.addAttribute("departments", departments);
 
-        return "departments";
+        return "departments_js";
+    }
+
+    // @Autowired private DepartmentService departmentService;
+    @GetMapping("/departments_vue")
+    public String departments_vue(Model model){
+
+        // var departments = departmentService.fetchDepartmentList();
+        // model.addAttribute("departments", departments);
+
+        return "departments_vue";
     }
 
     @GetMapping("/organizations")
