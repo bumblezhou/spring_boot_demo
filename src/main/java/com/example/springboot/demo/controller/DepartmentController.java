@@ -1,10 +1,6 @@
 package com.example.springboot.demo.controller;
 
-
-import java.util.List;
-
 // Importing required classes
-// import javax.validation.Valid;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,14 +61,16 @@ public class DepartmentController {
     }
 
     /*
-     * Example: http://localhost:8080/api/departments/findDepartments?page=0&size=10&sortBy=Id&name=abc&address=xyz&code=123
+     * Example: http://localhost:8080/api/departments/findDepartments?page=0&size=10&sortBy=Id&name=abc&address=xyz&code=123&membersMin=10&membersMax=20
      * 
      * @RequestParam(defaultValue = "0") int page,
      * @RequestParam(defaultValue = "10") int size,
      * @RequestParam(defaultValue = "id") String sortBy,
      * @RequestParam(required = false) String name,
      * @RequestParam(required = false) String address,
-     * @RequestParam(required = false) String code
+     * @RequestParam(required = false) String code,
+     * @RequestParam(required = false) String membersMin,
+     * @RequestParam(required = false) String membersMax
     */
     @GetMapping("/api/departments/findDepartments")
     public ResponseEntity<Page<Department>> findDepartments(
@@ -81,10 +79,19 @@ public class DepartmentController {
         @RequestParam(defaultValue = "id") String sortBy,
         @RequestParam(required = false) String name,
         @RequestParam(required = false) String address,
-        @RequestParam(required = false) String code
+        @RequestParam(required = false) String code,
+        @RequestParam(required = false) String membersMin,
+        @RequestParam(required = false) String membersMax
     ) {
         PageRequest pageable = PageRequest.of(page, size, Sort.by(sortBy));
-        Page<Department> departments = departmentService.findDepartments(name, address, code, pageable);
+        
+        Integer membersMinValue = 0;
+        Integer membersMaxValue = 0;
+        if (membersMin != null && !membersMin.isEmpty() && membersMax != null && !membersMax.isEmpty()) {
+            membersMinValue = Integer.parseInt(membersMin);
+            membersMaxValue = Integer.parseInt(membersMax);
+        }
+        Page<Department> departments = departmentService.findDepartments(name, address, code, membersMinValue, membersMaxValue, pageable);
         return new ResponseEntity<>(departments, HttpStatus.OK);
     }
  

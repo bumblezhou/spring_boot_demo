@@ -12,12 +12,16 @@ import org.springframework.data.repository.query.Param;
 public interface DepartmentRepository extends JpaRepository<Department, Long> {
 
   @Query("SELECT new com.example.springboot.demo.model.Department(D.Id, D.Name, D.Address, D.Code, D.Members, D.IsRunning) FROM Department D WHERE " +
-        "(D.Name LIKE %:name%) OR " +
-        "(D.Address LIKE %:address%) OR " +
-        "(D.Code LIKE %:code%)")
+        "(:#{#name == null} = true or D.Name LIKE %:name%) AND " +
+        "(:#{#address == null} = true or D.Address LIKE %:address%) AND " +
+        "(:#{#code == null} = true or D.Code LIKE %:code%) AND " +
+        "(:#{#membersMin == 0} = true or (D.Members >= (:membersMin))) AND" +
+        "(:#{#membersMax == 0} = true or (D.Members <= (:membersMax)))")
   Page<Department> findByFilters(
     @Param("name") String name, 
     @Param("address") String address, 
     @Param("code") String code, 
+    @Param("membersMin") Integer membersMin, 
+    @Param("membersMax") Integer membersMax, 
     Pageable pageable);
 }

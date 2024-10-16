@@ -15,11 +15,22 @@
         <button type="button" class="btn btn-primary my-3" onclick="add_department()">Add Department</button>
 
         <div class="row my-3">
-            <div class="col-sm-9">
-                <input type="text" id="txt_search_key" name="txt_search_key" placeholder="Example: 财务部" value="财务部"
-                    class="form-control col-sm-3" />
+            <div class="col-sm-2">
+                <input type="text" id="txt_search_name" name="txt_search_name"  placeholder="Search by Name" value="财务部" class="form-control col-sm-3" />
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-2">
+                <input type="text" id="txt_search_addr" name="txt_search_addr"  placeholder="Search by Address" value="17区" class="form-control col-sm-3" />
+            </div>
+            <div class="col-sm-2">
+                <input type="text" id="txt_search_code" name="txt_search_code"  placeholder="Search by Code" value="" class="form-control col-sm-3" />
+            </div>
+            <div class="col-sm-2">
+                <input type="number" id="txt_search_min_members" name="txt_search_min_members"  placeholder="Min merbers" value="" class="form-control col-sm-3" />
+            </div>
+            <div class="col-sm-2">
+                <input type="number" id="txt_search_max_members" name="txt_search_max_members"  placeholder="Max members" value="" class="form-control col-sm-3" />
+            </div>
+            <div class="col-sm-2">
                 <button type="button" class="btn btn-primary"
                     onclick="search_department(currentPageIndex)">Search</button>
             </div>

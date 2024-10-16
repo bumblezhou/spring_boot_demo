@@ -19,7 +19,7 @@ public interface DepartmentService {
 	// Search operation
 	Page<Department> fetchDepartmentsByPage(Pageable pageable);
 
-	Page<Department> findDepartments(String name, String address, String code, Pageable pageable);
+	Page<Department> findDepartments(String name, String address, String code, Integer membersMin, Integer membersMax, Pageable pageable);
 
 	// Update operation
 	Department updateDepartment(Department department, Long Id);

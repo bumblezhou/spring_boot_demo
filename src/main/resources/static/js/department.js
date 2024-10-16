@@ -95,8 +95,18 @@ function display_pagination(data) {
 }
 
 function search_department(currentPageIndex){
-    let search_key_words = document.getElementById('txt_search_key').value;
-    if(search_key_words == null || search_key_words == "") {
+    let search_key_name = document.getElementById('txt_search_name').value;
+    let search_key_addr = document.getElementById('txt_search_addr').value;
+    let search_key_code = document.getElementById('txt_search_code').value;
+    let search_min_members = document.getElementById('txt_search_min_members').value;
+    let search_max_members = document.getElementById('txt_search_max_members').value;
+    if(
+        (search_key_name == null || search_key_name == "") &&
+        (search_key_addr == null || search_key_addr == "") &&
+        (search_key_code == null || search_key_code == "") &&
+        (search_min_members == null || search_min_members == "") &&
+        (search_max_members == null || search_max_members == "")
+    ) {
         currentState = 0;
         currentPageIndex = 0;
         load_departments(currentPageIndex);
@@ -107,7 +117,7 @@ function search_department(currentPageIndex){
     const xhr = new XMLHttpRequest();
 
     // Specify the type of request (GET) and the URL
-    xhr.open('GET', 'http://localhost:8080/api/departments/findDepartments?page=' + currentPageIndex + '&size=' + pageSize + '&name=' + search_key_words + '&address=' + search_key_words + '&code=' + search_key_words , true);
+    xhr.open('GET', 'http://localhost:8080/api/departments/findDepartments?page=' + currentPageIndex + '&size=' + pageSize + '&name=' + search_key_name + '&address=' + search_key_addr + '&code=' + search_key_code + '&membersMin' + search_min_members + '&membersMax' + search_max_members, true);
 
     // Set up a callback function to handle the response
     xhr.onload = function() {

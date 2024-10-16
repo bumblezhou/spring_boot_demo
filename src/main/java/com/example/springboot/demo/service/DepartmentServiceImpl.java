@@ -34,8 +34,8 @@ public class DepartmentServiceImpl implements DepartmentService {
         return departmentRepository.findAll(pageable);
     }
 
-    public Page<Department> findDepartments(String name, String address, String code, Pageable pageable) {
-        return departmentRepository.findByFilters(name, address, code, pageable);
+    public Page<Department> findDepartments(String name, String address, String code, Integer membersMin, Integer membersMax, Pageable pageable) {
+        return departmentRepository.findByFilters(name, address, code, membersMin, membersMax, pageable);
     }
 
     // Update operation
