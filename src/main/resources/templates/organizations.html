@@ -22,10 +22,11 @@
 
                 <!-- Buttons for Create, Update, and Delete -->
                 <div class="mt-4">
-                    <button class="btn btn-primary" @click="openCreateModal">Create New Node</button>
-                    <button class="btn btn-warning" v-if="selectedOrg" @click="openUpdateModal">Update Selected
-                        Node</button>
-                    <button class="btn btn-danger" v-if="selectedOrg" @click="deleteNode">Delete Selected Node</button>
+                    <button class="btn btn-primary" @click="openCreateModal">Create Node</button>
+                    &nbsp;
+                    <button class="btn btn-warning" v-if="selectedOrg" @click="openUpdateModal">Update Node</button>
+                    &nbsp;
+                    <button class="btn btn-danger" v-if="selectedOrg" @click="deleteNode">Delete Node</button>
                 </div>
             </div>
 
