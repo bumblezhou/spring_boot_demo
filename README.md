@@ -34,3 +34,10 @@
 	    implementation 'org.hibernate.orm:hibernate-community-dialects:6.6.1.Final'
 ## how to run:
     1. ./gradlew.bat bootRun
+
+## how to package:
+    1. ./gradlew.bat clean build
+    2. the target war package is located in ./build/libs/springboot.demo-0.0.1-SNAPSHOT.war
+
+## how to deploy:
+    java -jar .\build\libs\springboot.demo-0.0.1-SNAPSHOT.war
