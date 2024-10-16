@@ -103,38 +103,36 @@
                     </div>
                     <div class="modal-body">
                         <input type="hidden" v-model="department.id">
-                        <p class="mb-0">
-                            <div class="form-group row">
-                                <label for="departmentName" class="col-sm-3 col-form-label">Name</label>
-                                <div class="col-sm-9">
-                                    <input id="departmentName" type="text" class="form-control" v-model="department.name" required />
-                                </div>
+                        <div class="form-group row mb-3">
+                            <label for="departmentName" class="col-sm-3 col-form-label">Name</label>
+                            <div class="col-sm-9">
+                                <input id="departmentName" type="text" class="form-control" v-model="department.name" required />
                             </div>
-                            <div class="form-group row">
-                                <label for="departmentAddress" class="col-sm-3 col-form-label">Address</label>
-                                <div class="col-sm-9">
-                                    <input id="departmentAddress" type="text" class="form-control" v-model="department.address" />
-                                </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <label for="departmentAddress" class="col-sm-3 col-form-label">Address</label>
+                            <div class="col-sm-9">
+                                <input id="departmentAddress" type="text" class="form-control" v-model="department.address" />
                             </div>
-                            <div class="form-group row">
-                                <label for="departmentCode" class="col-sm-3 col-form-label">Code</label>
-                                <div class="col-sm-9">
-                                    <input id="departmentCode" type="text" class="form-control" v-model="department.code" />
-                                </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <label for="departmentCode" class="col-sm-3 col-form-label">Code</label>
+                            <div class="col-sm-9">
+                                <input id="departmentCode" type="text" class="form-control" v-model="department.code" />
                             </div>
-                            <div class="form-group row">
-                                <label for="departmentMembers" class="col-sm-3 col-form-label">Members</label>
-                                <div class="col-sm-9">
-                                    <input id="departmentMembers" type="number" class="form-control" v-model="department.members" min="0" />
-                                </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <label for="departmentMembers" class="col-sm-3 col-form-label">Members</label>
+                            <div class="col-sm-9">
+                                <input id="departmentMembers" type="number" class="form-control" v-model="department.members" min="0" />
                             </div>
-                            <div class="form-group row">
-                                <label for="departmentIsRunning" class="col-sm-3 col-form-label">Is Running?</label>
-                                <div class="col-sm-9">
-                                    <input id="departmentIsRunning" type="checkbox" class="form-check-input" v-model="department.isRunning" />
-                                </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <label for="departmentIsRunning" class="col-sm-3 col-form-label">Is Running?</label>
+                            <div class="col-sm-9">
+                                <input id="departmentIsRunning" type="checkbox" class="form-check-input" v-model="department.isRunning" />
                             </div>
-                        </p>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

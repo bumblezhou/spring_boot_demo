@@ -118,7 +118,7 @@
         </nav>
 
         <!-- Product Modal (Add/Edit) -->
-        <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+        <div class="modal fade modal-lg" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <form @submit.prevent="saveProduct" enctype="multipart/form-data">
@@ -129,60 +129,72 @@
                         </div>
                         <div class="modal-body">
                             <input type="hidden" v-model="product.id">
-
-                            <div class="mb-3">
-                                <label for="productName" class="form-label">Product Name</label>
-                                <input id="productName" type="text" class="form-control" v-model="product.name" required>
+                            <div class="form-group row mb-3">
+                                <label for="productName" class="col-sm-3 form-label">Product Name</label>
+                                <div class="col-sm-9">
+                                    <input id="productName" type="text" class="form-control" v-model="product.name" required>
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="productType" class="form-label">Product Type</label>
-                                <select id="productType" class="form-select" v-model="product.productTypeId" required>
-                                    <option v-for="type in productTypes" :value="type.id">{{ type.name }}</option>
-                                </select>
+                            <div class="form-group row mb-3">
+                                <label for="productType" class="col-sm-3 form-label">Product Type</label>
+                                <div class="col-sm-9">
+                                    <select id="productType" class="form-select" v-model="product.productTypeId" required>
+                                        <option v-for="type in productTypes" :value="type.id">{{ type.name }}</option>
+                                    </select>
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="supplier" class="form-label">Supplier</label>
-                                <select id="supplier" class="form-select" v-model="product.supplierId" required>
-                                    <option v-for="supplier in suppliers" :value="supplier.id">{{ supplier.name }}
-                                    </option>
-                                </select>
+                            <div class="form-group row mb-3">
+                                <label for="supplier" class="col-sm-3 form-label">Supplier</label>
+                                <div class="col-sm-9">
+                                    <select id="supplier" class="form-select" v-model="product.supplierId" required>
+                                        <option v-for="supplier in suppliers" :value="supplier.id">{{ supplier.name }}
+                                        </option>
+                                    </select>
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="productPrice" class="form-label">Price</label>
-                                <input id="productPrice" type="number" class="form-control" v-model="product.price"
-                                    step="0.01" required>
+                            <div class="form-group row mb-3">
+                                <label for="productPrice" class="col-sm-3 form-label">Price</label>
+                                <div class="col-sm-9">
+                                    <input id="productPrice" type="number" class="form-control" v-model="product.price" step="0.01" required>
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="imageFile" class="form-label">Upload Image</label>
-                                <input id="imageFile" type="file" class="form-control" @change="uploadImage">
+                            <div class="form-group row mb-3">
+                                <label for="imageFile" class="col-sm-3 form-label">Upload Image</label>
+                                <div class="col-sm-9">
+                                    <input id="imageFile" type="file" class="form-control" @change="uploadImage">
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="imageUrl" class="form-label">Image URL</label>
-                                <input id="imageUrl" type="text" class="form-control" v-model="product.imageUrl"
-                                    readonly>
+                            <div class="form-group row mb-3">
+                                <label for="imageUrl" class="col-sm-3 form-label">Image URL</label>
+                                <div class="col-sm-9">
+                                    <input id="imageUrl" type="text" class="form-control" v-model="product.imageUrl" readonly />
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="specifications" class="form-label">Specifications</label>
-                                <textarea id="specifications" class="form-control" v-model="product.specifications"
-                                    rows="3"></textarea>
+                            <div class="form-group row mb-3">
+                                <label for="specifications" class="col-sm-3 form-label">Specifications</label>
+                                <div class="col-sm-9">
+                                    <textarea id="specifications" class="form-control" v-model="product.specifications" rows="3"></textarea>
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="detailsUrl" class="form-label">Details URL</label>
-                                <input id="detailsUrl" type="url" class="form-control" v-model="product.detailsUrl"
-                                    required>
+                            <div class="form-group row mb-3">
+                                <label for="detailsUrl" class="col-sm-3 form-label">Details URL</label>
+                                <div class="col-sm-9">
+                                    <input id="detailsUrl" type="url" class="form-control" v-model="product.detailsUrl" required />
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="description" class="form-label">Description</label>
-                                <textarea id="description" class="form-control" v-model="product.description"
-                                    rows="3"></textarea>
+                            <div class="form-group row mb-3">
+                                <label for="description" class="col-sm-3 form-label">Description</label>
+                                <div class="col-sm-9">
+                                    <textarea id="description" class="form-control" v-model="product.description" rows="3"></textarea>
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
