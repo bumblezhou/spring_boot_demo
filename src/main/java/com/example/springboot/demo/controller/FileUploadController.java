@@ -3,7 +3,6 @@ package com.example.springboot.demo.controller;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,25 +17,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.springboot.demo.service.StaticResourceService;
+import com.example.springboot.demo.service.FileStorageService;
 
 @RestController
 @RequestMapping("/api")
 public class FileUploadController {
 
     @Autowired
-    private StaticResourceService staticResourceService;
+    private FileStorageService fileStorageService;
     // Define the folder to store uploaded files
     // private static final String UPLOAD_DIR = "uploads/";
 
     @PostMapping("/upload")
     public ResponseEntity<?> handleFileUpload(@RequestParam("file") MultipartFile file) {
         try {
-            String upload_path = staticResourceService.getUploadsPath();
-            // System.out.println(upload_path);
             // Create the directory if it doesn't exist
             // Path uploadPath = Paths.get("src", "main", "resources", "static", UPLOAD_DIR);
-            Path uploadPath = Paths.get(upload_path);
+            Path uploadPath = fileStorageService.getUploadPath();
             System.out.println(uploadPath);
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
