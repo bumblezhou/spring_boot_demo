@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.springboot.demo.config.AppConfig;
 import com.example.springboot.demo.service.FileStorageService;
 
 @RestController
@@ -25,14 +26,11 @@ public class FileUploadController {
 
     @Autowired
     private FileStorageService fileStorageService;
-    // Define the folder to store uploaded files
-    // private static final String UPLOAD_DIR = "uploads/";
 
     @PostMapping("/upload")
     public ResponseEntity<?> handleFileUpload(@RequestParam("file") MultipartFile file) {
         try {
             // Create the directory if it doesn't exist
-            // Path uploadPath = Paths.get("src", "main", "resources", "static", UPLOAD_DIR);
             Path uploadPath = fileStorageService.getUploadPath();
             System.out.println(uploadPath);
             if (!Files.exists(uploadPath)) {
@@ -46,7 +44,7 @@ public class FileUploadController {
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
             // Generate the file URL (you can adjust this URL as needed)
-            String fileUrl = "/uploads/" + fileName;
+            String fileUrl = AppConfig.RELATIVE_UPLOAD_DIR + fileName;
 
             // Return the file URL in the response
             Map<String, String> response = new HashMap<>();
