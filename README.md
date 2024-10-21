@@ -40,7 +40,7 @@
     2. the target war package is located in ./build/libs/springboot.demo-0.0.1-SNAPSHOT.war
 
 ## how to deploy:
-    java -jar .\build\libs\springboot.demo-0.0.1-SNAPSHOT.war
+    java -jar ./springboot.demo-0.0.1-SNAPSHOT.war --spring.profiles.active=prod
 
 ## screenshots:
 1. Department Management
